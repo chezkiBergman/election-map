@@ -1,0 +1,49 @@
+POST http://localhost:3003/users/singUp HTTP/1.1
+Content-Type: application/json
+
+{
+"name": "itamar",
+"email": "itamarKeat@gmail.com",
+"password": "6421"
+
+}
+####
+
+POST http://localhost:3003/users/singIn HTTP/1.1
+Content-Type: application/json
+
+{
+"email": "meni@gmail.com",
+"password": "54830"
+
+}
+
+####
+
+
+
+
+GET http://localhost:3003/users/userInfo HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTJkM2NhZjkzY2E2MzRlMTA5MzJkNDciLCJpYXQiOjE2MzAzNjI5NTYsImV4cCI6MTYzMDM2NjU1Nn0.BMKIYvzBw7NuYpMakpNRlwmlwjYVCm7R_RJNMbH6PEE
+
+
+
+
+####
+
+
+GET http://localhost:3003/users/getMapElectionGeoJson HTTP/1.1
+
+#####
+
+
+
+
+POST http://localhost:3003/users/reset-password HTTP/1.1
+Content-Type: application/json
+
+{
+"email": "yosefAmrani@gmail.com",
+}
+
+

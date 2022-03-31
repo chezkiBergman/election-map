@@ -1,0 +1,22 @@
+POST http://localhost:3003/users/reset-password HTTP/1.1
+Content-Type: application/json
+
+
+{
+    "email": "chezi634@gmail.com"
+}
+
+#####
+
+POST http://localhost:3003/users/newPassword HTTP/1.1
+Content-Type: application/json
+
+{
+    "password": "5432",
+    "token":  "5586ed4fc853a1eea2a1bfc396a27c02b96dc9030f21c579c963d8b988000289"
+}
+
+
+#####
+
+GET http://localhost:3003/users/reset-confirm/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNGI0ZDFmMGYzNmYzMzk3ODBjMWE0MSIsImlhdCI6MTYzMjMyNzQzMywiZXhwIjoxNjMyMzMxMDMzfQ.CL0-SQVOpZngL20mZV4LNotz1DnlY0xxObJCpH6Pe3g HTTP/1.1

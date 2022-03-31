@@ -1,0 +1,19 @@
+.container{
+    display: flex;
+    justify-content: space-between;
+
+}
+
+form{
+    margin-top: 15px;
+    left      : 50%;
+    top       : 50%;
+    position  : absolute;
+    transform : translate(-50%, -50%);
+}
+h1{
+    color: rgb(73, 58, 160);
+    position:absolute;
+    margin: 10px;
+   left: 46%;
+}

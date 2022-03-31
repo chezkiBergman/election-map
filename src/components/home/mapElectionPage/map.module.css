@@ -1,0 +1,254 @@
+
+.span{
+    color:blanchedalmond;
+    font-weight: bold;
+    font-size: small
+}
+.div1{
+    text-align: center;
+    position: absolute;
+    width: 300px;
+    height: 35px;
+    background-color: blue;
+    animation-name: div1;
+    animation-duration: 1s;
+   
+    display: flex;
+    justify-content: space-between;
+    
+}
+@keyframes div1 {
+    0%   {width:0px}
+    100% {width:300px}
+  }
+
+
+.div2{
+    text-align: center;
+    position: absolute;
+    width: 230px;
+    height: 35px;
+    background-color: rgb(0, 255, 136);
+    top: 6.1%;
+    animation-name: div2;
+    animation-duration: 1s;
+    animation-delay: 0.1ms;
+ 
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes div2 {
+    0%   {width:0px}
+    100% {width: 230px;}
+  }
+
+.div3{
+    text-align: center;
+    position: absolute;
+    width: 180px;
+    height: 35px;
+    background-color: rgb(255, 123, 0);
+    top: 12.1%;
+    animation-name: div3;
+    animation-duration: 1s;
+    animation-delay: 0.2ms;
+  
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes div3 {
+    0%   {width:0px}
+    100% {width: 180px;}
+  }
+
+.div4{
+    text-align: center;
+    position: absolute;
+    width: 155px;
+    height: 35px;
+    background-color: rgb(187, 255, 0);
+    top: 18.1%;
+    animation-name: div4;
+    animation-duration: 1s;
+    animation-delay:0.3ms;
+  
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes div4{
+    0%   {width:0px}
+    100% {width: 155px;}
+  }
+
+.div5{
+    text-align: center;
+    position: absolute;
+    width: 140px;
+    height: 35px;
+    background-color: rgb(97, 33, 150);
+    top: 24.1%;
+    animation-name: div5;
+    animation-duration: 1s;
+    animation-delay:0.4ms;
+ 
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes div5{
+    0%   {width:0px}
+    100% {width: 140px;}
+  }
+
+.div6{
+    text-align: center;
+    position: absolute;
+    width: 140px;
+    height: 35px;
+    background-color: rgb(255, 0, 157);
+    top: 30.1%;
+    animation-name: div6;
+    animation-duration: 1s;
+    animation-delay:0.5ms;
+ 
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes div6{
+    0%   {width:0px}
+    100% {width: 140px;}
+  }
+
+.div7{
+    text-align: center;
+    position: absolute;
+    width: 140px;
+    height: 35px;
+    background-color: rgb(223, 17, 45);
+    top: 36.1%;
+    animation-name: div7;
+    animation-duration: 1s;
+    animation-delay:0.6ms;
+  
+    display: flex;
+    justify-content: space-between;
+}
+
+@keyframes div7{
+    0%   {width:0px}
+    100% {width: 140px;}
+  }
+
+.div8{
+    text-align: center;
+    position: absolute;
+    width: 140px;
+    height: 35px;
+    background-color: rgb(197, 140, 154);
+    top: 42.1%;
+    animation-name: div8;
+    animation-duration: 1s;
+    animation-delay:0.7ms;
+ 
+    display: flex;
+    justify-content: space-between;
+
+}
+@keyframes div8{
+    0%   {width:0px}
+    100% {width: 140px;}
+  }
+
+.div9{
+    text-align: center;
+    position: absolute;
+    width: 130px;
+    height: 35px;
+    background-color: rgb(161, 216, 11);
+    top: 48.1%;
+    animation-name: div9;
+    animation-duration: 1s;
+    animation-delay:0.8ms;
+  
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes div9{
+    0%   {width:0px}
+    100% {width: 130px;}
+  }
+
+.div10{
+    height: 35px;
+    animation-name: div10;
+    animation-duration: 1s;
+    animation-delay:0.9ms;
+    text-align: center;
+    position: absolute;
+    width: 130px;
+    background-color: rgb(17, 130, 206);
+    top: 54.1%;
+ 
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes div10{
+    0%   {width:0px}
+    100% {width: 130px;}
+  }
+
+.div11{
+    text-align: center;
+    position: absolute;
+    width: 130px;
+    background-color: rgb(238, 170, 106);
+    top: 60.1%;
+    height: 35px;
+    animation-name: div11;
+    animation-duration: 1s;
+    animation-delay:0.9ms;
+   
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes div11{
+    0%   {width:0px}
+    100% {width: 130px;}
+  }
+
+.div12{
+    text-align: center;
+    position: absolute;
+    width: 110px;
+    height: 35px;
+    background-color: rgb(214, 89, 208);
+    top: 66.1%;
+    animation-name: div12;
+    animation-duration: 1s;
+    animation-delay: 0.9m;
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes div12{
+    0%   {width:0px}
+    100% {width: 110px;}
+  }
+
+.div13{
+    text-align: center;
+    position: absolute;
+    width: 80px;
+    background-color: rgb(231, 118, 127);
+    top: 72.1%;
+    height: 35px;
+    animation-name: div13;
+    animation-duration: 1s;
+    animation-delay: 0.9ms;
+   
+    display: flex;
+    justify-content: space-between;
+}
+@keyframes div13{
+    0%   {width:0px}
+    100% {width: 80px;}
+  }
+
