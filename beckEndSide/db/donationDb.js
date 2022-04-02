@@ -11,11 +11,15 @@ import mongoose from 'mongoose'
         type: Number,
         require: false
       },
-    //   date:{
-    //       type:  Date,
-    //       require:true
+      sumDonationHistory:{
+          type:Number
+      },
+      date:{
+          type:  String,
+        //   default: new Date().toDateString(),
+          require:true
           
-    //   },
+      },
     },      {timestamps:true}
 
     )

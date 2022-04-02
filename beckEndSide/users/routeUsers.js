@@ -50,6 +50,7 @@ userRouter.get('/checkExpiresIn',verifyToken ,async (req, res) => {
 userRouter.get('/getImageUser',verifyToken ,async (req, res) => {
   try{
 
+
     // const {user} =req
     const users = await User.findOne({_id:req.user.id})
     if (!users) {
@@ -294,17 +295,32 @@ userRouter.post('/newPassword', async (req, res) => {
 
 userRouter.post("/donationAmount",verifyToken ,async (req,res) => {
   try{
-    // const findUser = await Donations.findOne({user:req.user.id})
+  
+    var today =new Date()
+    let formatDate = "יום: " + parseInt(today.getDay() + 1) + "-" +  today.getDate() + '-' + parseInt(today.getMonth() + 1) + '-' + today.getFullYear()
+    const findUser = await Donation.find({user:req.user.id})
+    let sum = 0;
+    for (let i = 0; i < findUser.length; i++) {
+        sum += findUser[i].donationAmount;
+    }
+  
     const {pay} =req.body
+    console.log(sum + pay);
+    
     if (pay){ 
     const newdDnation =  new Donation({
       user: req.user.id,
       donationAmount: pay,
+      date:formatDate,
+      sumDonationHistory: sum + pay
      
     })
     // findUser.donationAmount 
     // ? ( findUser.donationAmount = req.body.data +  findUser.donationAmount) : findUser.donationAmount = req.body.data
     await newdDnation.save()
+    const userRef =  await User.findOne({_id:req.user.id})
+    userRef.sumDonationHistory = newdDnation.sumDonationHistory
+    await userRef.save()
     res.status(200).json(newdDnation.toJSON())
   }else{
     res.status(200).send({msg:"לא התקבלה תרומה"})
@@ -317,10 +333,10 @@ userRouter.get("/checkDonationAmount",verifyToken ,async (req,res) => {
 try{
   if (req.user) {
    const findUser = await Donation.find({user:req.user.id})
-  if (findUser) {
-   res.status(200).json({findUser:findUser})
+  if (!findUser.length) {
+    return res.status(200).send({msg:"0.00"})
   }else{
-    res.status(200).send({msg:"0.00"})
+    return res.status(200).json({findUser:findUser})
   }
  
   } 

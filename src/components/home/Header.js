@@ -26,46 +26,47 @@ export default function Header() {
     const [showLink, setShowLink] = useState(false)
     const [tokenValid, setTokenValid] = useState("")
     const [state, setState] = useState(0)
+    const[linkToBackOfficePage,setLinkToBackOfficePage]=useState(false)
+    const token = JSON.parse(localStorage.getItem("loginToken"))
     
     useEffect(() => {
-        const token = () => {
-            const token = JSON.parse(localStorage.getItem("loginToken"))
+        const tokenFunc = () => {
+        
             if (token && state < 2) {
                 setTokenValid(token)
                 setImage(`http://localhost:3003/uploads/${tokenValid['img']} `)
                 setState((v) => v + 1)
                 console.log(state);
-
-                
-
             }
-
+            tokenValid['permissions']=== 'admin' && setLinkToBackOfficePage(true)
         }
-        token()
+        tokenFunc()
 
     }, [tokenValid, state])
 
+ 
     function checkExpiration() {
-        const token = JSON.parse(localStorage.getItem("loginToken"))
+       
         token &&
             axios.get(`http://localhost:3003/users/checkExpiresIn`, { headers: { "Authorization": `Bearer ${token['token']}` } })
-                .then(res => {
-                }).catch(function (error) {
-                    if (error.response) {
-                        console.log({ data: error.response.data, status: error.response.status, headers: error.response.headers });
-                        localStorage.removeItem("loginToken")
-                        setTokenValid(!tokenValid)
-                        setImage("")
-                        // window.location.reload()
-                        location.pathname != "/login" && history.push("/login")
-                    }
+            .then(res => {
+             console.log(res);
+            }).catch(function (error) {
+                if (error.response) {
+                    console.log({ data: error.response.data, status: error.response.status, headers: error.response.headers });
+                    localStorage.removeItem("loginToken")
+                    setTokenValid(!tokenValid)
+                    setImage("")
+                    // window.location.reload()
+                    location.pathname != "/login" && history.push("/login")
+                }
 
-                });
-
+            })
+          
     }
-
+  
     function myFunction() {
-        var myinterval = 1 * 60 * 1000;
+        var myinterval = 1000 * 60 * 60;
         setInterval(function () { checkExpiration(); }, myinterval);
     }
     myFunction()
@@ -100,6 +101,7 @@ export default function Header() {
                         <NavDropdown drop="start" style={{ position: "absolute", right: "5px", top: "-5px" }}
                             title={<img className="pull-left" style={{ width: "47px", borderRadius: "25px" }} src={image} />} id="navbarScrollingDropdown">
                             <NavDropdown.Item onClick={() => { logOutFunc() }}>התנתק</NavDropdown.Item>
+                     { linkToBackOfficePage ?   (<NavDropdown.Item href="/backOffice">ניהול דפי משתמשים</NavDropdown.Item>):null}
                             <NavDropdown.Item href="/editUser">ערוך פרופיל</NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item href="/payment">

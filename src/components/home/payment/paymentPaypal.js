@@ -1,10 +1,12 @@
 // import React, { useRef,useState,useEffect } from 'react'
-import { Form, FormControl,Button, Alert } from 'react-bootstrap'
+import { Form, FormControl,Button, Alert,Table } from 'react-bootstrap'
 
 import React, { useState,useEffect,useRef } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import HistoryOfDonations from './historyOfDonations';
+
 
 export default function ReactPayPal() {
 
@@ -14,7 +16,7 @@ export default function ReactPayPal() {
      const [ErrorMessage, setErrorMessage] = useState("");
      const [orderID, setOrderID] = useState(false);
      const [donations, setDonations] = useState(null)
-
+    
 
     const history = useHistory()
  
@@ -22,26 +24,31 @@ export default function ReactPayPal() {
       const token = JSON.parse(localStorage.getItem("loginToken"))
       if (!token ) {
         history.push("/login")
-      }
+      }else{
       axios.get(`http://localhost:3003/users/checkDonationAmount`, { headers: { "Authorization": `Bearer ${token['token']}` } })
       .then(res => {
-          setDonations(res.data.findUser)
-      
+        let lastElement = res.data.findUser[res.data.findUser.length - 1];
+        console.log(lastElement);
+          const dateDonations = res.data 
+          && res.data.findUser?.map(i=>{
+            return{
+              donationAmount: i.donationAmount,
+              donationDate: i.date,
+            }
+             })
+         setDonations({dateDonations, sumDonationHistory: lastElement.sumDonationHistory.toFixed(2)})
+        
       }).catch(function (error) {
           if (error.response) {
               console.log({ data: error.response.data, status: error.response.status, headers: error.response.headers });
           }
       })
 
-
-
       if (success) {
         setTimeout(() => {
           window.location.reload()
         }, 3000);
-       
             setShow(!show)
-         
             axios.post(`http://localhost:3003/users/donationAmount`,{pay},{ headers: { "Authorization": `Bearer ${token['token']}`} } 
             )
             .then(res => {
@@ -55,8 +62,10 @@ export default function ReactPayPal() {
             }
       })
     }
-
+  }
     console.log(donations);
+ 
+           
     }, [success]
   );
  
@@ -115,11 +124,16 @@ export default function ReactPayPal() {
 
  }
  return (
+   
     <PayPalScriptProvider
       options={{
         "client-id":"AYmgj7G4zjItqKuG4y26vO2PkNTHAL0QQqZTFtuXfpYja99osNDg19cPa7uDcqDGHA370EMDYNdAG9Ag",
       }}
     >
+      
+        {donations ?(<HistoryOfDonations donations={donations}/>)
+             : <Alert style={{textAlign:"center"}}>עדיין לא תרמת לאתר</Alert>}
+
             <div style={{position:"absolute",left:"42.2%",top:"20%"}}>
                <Form.Group className="mb-3" style={{textAlign:"center"}} controlId="formNumber">
               <Form.Label style={{ color: "wheat", fontWeight: "bold" ,fontSize:"35px" }}>סכום התרומה</Form.Label>
@@ -139,11 +153,7 @@ export default function ReactPayPal() {
             onApprove={onApprove}
           />
         ) : null}
-        {donations ?(<div><ul>{donations.map(i=>{
-          return(
-              <li>{i.donationAmount} בתאריך{i.date}</li>
-          )
-        })}</ul></div>):null}
+      
       </div>
     </PayPalScriptProvider>
   );

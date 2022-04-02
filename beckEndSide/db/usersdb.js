@@ -23,7 +23,7 @@ import mongoose from 'mongoose'
       require: true
     },
     resetPassOrActivateUserToken: {
-      type: Date,
+      type: String,
     },
     resetPassOrActivateUserExpires: {
       type: Date,
@@ -39,6 +39,10 @@ import mongoose from 'mongoose'
       type: String,
       option:["admin","user"],
       default: "user"
+    },
+    sumDonationHistory:{
+      type: Number,
+      ref: 'Donation'
     }
   });
 

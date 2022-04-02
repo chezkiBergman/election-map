@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Form, Button, Container, Alert } from 'react-bootstrap';
 import styles from './login.css'
 import axios from "axios";
-import  { AiFillEyeInvisible,AiFillEye} from "react-icons/ai"
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai"
 import { Link, Redirect, useHistory, useLocation } from "react-router-dom";
 
 
@@ -23,14 +23,15 @@ function Login() {
             (setAlreadyLogin(true)) :
             axios.post(`http://localhost:3003/users/singIn`, { email, password })
                 .then(res => {
-            
+
                     console.log(res.data.findUser['permissions']);
                     const tokenExp = {}
                     tokenExp.token = res.data.token
                     tokenExp.img = res.data.findUser.image
+                    tokenExp.permissions =res.data.findUser.permissions
                     localStorage.setItem('loginToken', JSON.stringify(tokenExp))
-                    res.data.findUser['permissions'] === "admin" ? (history.push("/backOffice")):
-                    setMoveToMapElectin(true)
+                    res.data.findUser['permissions'] === "admin" ? (history.push("/backOffice")) :
+                        setMoveToMapElectin(true)
                     window.location.reload()
 
                 }).catch(function (error) {
@@ -41,31 +42,31 @@ function Login() {
                         console.log(error.response.headers);
 
                     }
-                
+
                 });
-            
+
         e.preventDefault()
         setEmail('')
         setPassword('')
-            
+
     }
 
     return (
         <Container className='container'>
 
-            <h1 className='h1' style={{ color:"wheat",margin: '15px',position:"absolute",left:"42%" }}>התחברות</h1>
+            <h1 className='h1' style={{ color: "wheat", margin: '15px', position: "absolute", left: "42%" }}>התחברות</h1>
             <Form onSubmit={handleOnSubmit} className={styles.form}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label style={{color:"wheat",fontWeight:"bold"}}>אימייל</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" onFocus={(e)=>setError("")} value={email} onChange={(e) => { setEmail(e.target.value) }} />
+                    <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>אימייל</Form.Label>
+                    <Form.Control type="email" placeholder="Enter email" onFocus={(e) => setError("")} value={email} onChange={(e) => { setEmail(e.target.value) }} />
                     <Form.Text className="text-muted">
                     </Form.Text>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label style={{color:"wheat",fontWeight:"bold"}}>סיסמה</Form.Label>
-                    <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" onFocus={(e)=>setError("")} value={password} onChange={e=>{setPassword(e.target.value)}} />
-            { !showPassword? <AiFillEye style={{position:"relative",color:"black",left:"415px",top:"-33px"}} onClick={()=>   setShowPassword(!showPassword)}/>: <AiFillEyeInvisible style={{position:"relative",color:"black",left:"415px",top:"-33px"}} onClick={()=>   setShowPassword(!showPassword)}/>  }
+                    <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>סיסמה</Form.Label>
+                    <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" onFocus={(e) => setError("")} value={password} onChange={e => { setPassword(e.target.value) }} />
+                    {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "415px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "415px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
                 </Form.Group>
 
                 <Button style={{ margin: '2px' }} variant="primary" type="submit" >

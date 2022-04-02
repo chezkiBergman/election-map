@@ -4,6 +4,7 @@ import { useCallback, useState, useMemo, useEffect } from 'react';
 import axios from 'axios'
 import { useHistory } from 'react-router-dom';
 import EditUser from '../usersLogin/editUser/editUser';
+import HistoryOfDonations from '../payment/historyOfDonations';
 
 
 
@@ -14,6 +15,9 @@ export default function WebsiteManagement() {
     const [show, setShow] = useState(true)
     const [data, setData] = useState('')
    const[ showDonationHistory,setShowDonationHistory]=useState(false)
+   const [donations, setDonations] = useState(null)
+    
+   const token = JSON.parse(localStorage.getItem("loginToken"))
     const[editWindow,setEditWindow]=useState(false)
     const history = useHistory()
 
@@ -44,17 +48,35 @@ export default function WebsiteManagement() {
             selector: row => row.pass,
         }, {
             name: "תרומות",
-            selector: row => <div onMouseOver={donationHistory}>{row.donationAmount}</div> ,
+            selector: row => <Button size="sm" variant="secondary" onMouseDownCapture={donationHistory}>{row.sumDonationHistory}</Button>,
         },
     
     ];
     
     const donationHistory=()=>{
         setShowDonationHistory(!showDonationHistory)
+        axios.get(`http://localhost:3003/users/checkDonationAmount`, { headers: { "Authorization": `Bearer ${token['token']}` } })
+      .then(res => {
+        let lastElement = res.data.findUser[res.data.findUser.length - 1];
+        console.log(lastElement);
+          const dateDonations = res.data 
+          && res.data.findUser?.map(i=>{
+            return{
+              donationAmount: i.donationAmount,
+              donationDate: i.date,
+            }
+             })
+         setDonations({dateDonations, sumDonationHistory: lastElement.sumDonationHistory.toFixed(2)})
+        
+      }).catch(function (error) {
+          if (error.response) {
+              console.log({ data: error.response.data, status: error.response.status, headers: error.response.headers });
+          }
+      })
     }
     
     useEffect(() => {
-        const token = JSON.parse(localStorage.getItem("loginToken"))
+       
         token ? (
             axios.get(`http://localhost:3003/users/getAllUsers`, { headers: { "Authorization": `Bearer ${token['token']}` } })
                 .then(res => {
@@ -69,7 +91,7 @@ export default function WebsiteManagement() {
                                 activateUserByMail: m.activateUserByMail,
                                 email: m.email,
                                 pass: m.pass,
-                                donationAmount: m.donationAmount
+                                sumDonationHistory: m.sumDonationHistory
                             };
                         });
 
@@ -151,14 +173,9 @@ export default function WebsiteManagement() {
             />
    
 }
-{showDonationHistory && 
-<div>
-    <ul>
-        <li></li>
-    
-    </ul>
-    </div>}
-        </div>
+{donations && showDonationHistory ?( <HistoryOfDonations donations={donations} />):null}
+</div>
+
     )
 }
 
