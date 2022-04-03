@@ -16,8 +16,7 @@ export default function ReactPayPal() {
      const [ErrorMessage, setErrorMessage] = useState("");
      const [orderID, setOrderID] = useState(false);
      const [donations, setDonations] = useState(null)
-    
-
+     
     const history = useHistory()
  
     useEffect(() => {
@@ -54,7 +53,8 @@ export default function ReactPayPal() {
             .then(res => {
               console.log(res.data);
             }).catch(function(error){
-              if (error.response) {
+              if (error) {
+                setErrorMessage(error.response.data)
                 console.log(error.response.data);
                 console.log(error.response.status);
                 console.log(error.response.headers);
@@ -130,10 +130,10 @@ export default function ReactPayPal() {
         "client-id":"AYmgj7G4zjItqKuG4y26vO2PkNTHAL0QQqZTFtuXfpYja99osNDg19cPa7uDcqDGHA370EMDYNdAG9Ag",
       }}
     >
-      
+       {ErrorMessage &&  <Alert style={{textAlign:"center"}}>{ErrorMessage}</Alert> }
         {donations ?(<HistoryOfDonations donations={donations}/>)
              : <Alert style={{textAlign:"center"}}>עדיין לא תרמת לאתר</Alert>}
-
+        
             <div style={{position:"absolute",left:"42.2%",top:"20%"}}>
                <Form.Group className="mb-3" style={{textAlign:"center"}} controlId="formNumber">
               <Form.Label style={{ color: "wheat", fontWeight: "bold" ,fontSize:"35px" }}>סכום התרומה</Form.Label>

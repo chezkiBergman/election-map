@@ -106,10 +106,6 @@ function Registration() {
 
             setRegistrationComplete(res.data)
 
-            // setTimeout(() => {
-            //   return history.push("/login")
-            // }, 5000);
-
           }).catch(function (error) {
             if (error.response) {
               setError(error.response.data.msg)
@@ -184,22 +180,19 @@ function Registration() {
                 {passwordErr.password && <Alert variant="danger">{passwordErr.password}</Alert>}
                 <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" onFocus={() => onFocus()} value={password} onChange={e => onChangeAndValidPassword(e)} />
 
-                {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
+                {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> 
+                : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
               </Form.Group>
 
-              {/* <Form.Select className="mb-3" controlId="permissions" aria-label="Default select example">
-                <option>Open this select menu</option>
-                <option value="1">משתמש</option>
-                <option value="2">מנהל</option>
-              </Form.Select> */}
               <Button variant="primary" type="submit" >
-                Submit
+                שלח
               </Button>
               {
                 emailExsit && (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-23%", width: "250px", textAlign: "center", }}>אימייל זה נמצא בשימוש!</Alert>)
               }
               {
-                loginAlready ? (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-23%", width: "250px", textAlign: "center", }}>הינך מחובר כבר למערכת</Alert>) : null
+                loginAlready ? (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-23%", width: "250px", textAlign: "center", }}>הינך מחובר כבר למערכת</Alert>) 
+                : null
               }
 
             </Form>

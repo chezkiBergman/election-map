@@ -4,6 +4,7 @@
   "description": "",
   "type": "module",
   "main": "server.js",
+
   "scripts": {
     "run-dev": "nodemon ./server.js",
     "run": "node ./server.js",

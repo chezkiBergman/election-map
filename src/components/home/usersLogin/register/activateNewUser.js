@@ -1,48 +1,45 @@
-import { Button, Container,Alert } from "react-bootstrap";
-import { useState ,useEffect} from "react";
+import { Button, Container, Alert } from "react-bootstrap";
+import { useState, useEffect } from "react";
 import axios from 'axios'
 import { useParams } from "react-router-dom";
 
 function ActivateNewUser() {
   const { token } = useParams()
-    const [activatUser, setActivatUser] = useState(false)
+  const[isTokenActivateExpired,setIsTokenActivateExpired]=useState(false)
 
-    useEffect(() => {
+  useEffect(() => {
     function setActivate() {
-    
-    
-            axios.post(`http://localhost:3003/users/setActivateUser`,{token}
-         
-             ).then(res => {
-        
-                console.log(res);
 
-            }).catch(function (error) {
-                if (error) {
-                    console.log(error.response);
-                }
-              
-            })
+      axios.post(`http://localhost:3003/users/setActivateUser`, { token }
+      ).then(res => {
+        setIsTokenActivateExpired(res.data.msg)
+      }).catch(function (error) {
+        if (error) {
+          console.log(error.response);
+          setIsTokenActivateExpired(error.response.data.msg)
+        }
+
+      })
 
     }
     setActivate()
-}, [])
+    console.log(isTokenActivateExpired);
+  }, [])
 
-  return(
-  
+  return (
 
-    <Container style={{position: 'absolute',top:"20%", maxWidth: '1280px'}}>
-     
-      {/* <h2 style={{color:"wheat"}}>ם</h2> */}
 
-     {/* <div className="container" style={{justifyContent:"space-around",marginTop:"50px"}}> */}
-        <Alert variant="info" style={{margin:"auto",textDecoration:"none"}}>
-        שמך נקלט במערכת, ברוכים הבאים
-      <Alert.Link style={{textDecoration:"none"}} href="/login"> התחבר </Alert.Link>
+    <Container style={{ position: 'absolute', top: "20%", maxWidth: '1280px' }}>
+      <Alert variant="info" style={{ margin: "auto", textDecoration: "none" }}>
+        {isTokenActivateExpired}
+        {isTokenActivateExpired === 'שמך נקלט במערכת, ברוכים הבאים' ?(
+        <Alert.Link style={{ textDecoration: "none" }} href="/login"> התחבר </Alert.Link>):
+        <Alert.Link style={{ textDecoration: "none" }} href="/register"> הירשם </Alert.Link>}
+
       </Alert>
 
-        {/* </div>  */}
-  </Container>
+    
+    </Container>
   )
 }
 export default ActivateNewUser

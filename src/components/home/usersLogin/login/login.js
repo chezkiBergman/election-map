@@ -86,7 +86,7 @@ function Login() {
             }
 
             {
-                error ? (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "41.1%", top: "25%" }}>{error}</Alert>) : null
+                error ? (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "32.1%", top: "25%" }}>{error}</Alert>) : null
             }
             {
                 alreadyLogin && <Alert variant="info" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "36%", top: "10%" }}>הינך מחובר לאתר, נא התנתק בטרם התחבר שוב</Alert>

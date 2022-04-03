@@ -12,6 +12,7 @@ import HistoryOfDonations from '../payment/historyOfDonations';
 export default function WebsiteManagement() {
     const [selectedRows, setSelectedRows] = useState([])
     const [toggleCleared, setToggleCleared] = useState(false);
+    const[userName,setUserName]=useState("")
     const [show, setShow] = useState(true)
     const [data, setData] = useState('')
    const[ showDonationHistory,setShowDonationHistory]=useState(false)
@@ -48,14 +49,15 @@ export default function WebsiteManagement() {
             selector: row => row.pass,
         }, {
             name: "תרומות",
-            selector: row => <Button size="sm" variant="secondary" onMouseDownCapture={donationHistory}>{row.sumDonationHistory}</Button>,
+            selector: row => <Button size="sm" variant="secondary" onClick={()=>setUserName(row.email)} onMouseDownCapture={donationHistory}>{row.sumDonationHistory}</Button>,
         },
     
     ];
     
     const donationHistory=()=>{
         setShowDonationHistory(!showDonationHistory)
-        axios.get(`http://localhost:3003/users/checkDonationAmount`, { headers: { "Authorization": `Bearer ${token['token']}` } })
+        console.log(userName);
+        axios.get(`http://localhost:3003/users/checkDonationAmount/${userName}`, { headers: { "Authorization": `Bearer ${token['token']}` } })
       .then(res => {
         let lastElement = res.data.findUser[res.data.findUser.length - 1];
         console.log(lastElement);
@@ -73,6 +75,7 @@ export default function WebsiteManagement() {
               console.log({ data: error.response.data, status: error.response.status, headers: error.response.headers });
           }
       })
+      console.log(donations);
     }
     
     useEffect(() => {

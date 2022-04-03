@@ -8,11 +8,11 @@ import mongoose from 'mongoose'
     },
    
     donationAmount:{
-        type: Number,
+      type:   Number ,
         require: false
       },
       sumDonationHistory:{
-          type:Number
+       type:  Number
       },
       date:{
           type:  String,
