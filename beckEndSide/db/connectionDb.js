@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv'
+dotenv.config() 
+console.log(process.env.CONNECTIONDB_URI);
 
-
- const CONNECTION = "mongodb+srv://chezkiBerg:PV33WiDZdZ9V$$p@cluster0.mmlqo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+ const CONNECTION =process.env.CONNECTIONDB_URI
 mongoose.connect(CONNECTION, 
 {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
 

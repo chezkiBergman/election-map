@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from 'dotenv'
+dotenv.config() 
 
 
 
@@ -26,7 +28,7 @@ export const verifyToken =  (req, res, next) => {
    const { authorization } = req.headers;
    const token = authorization.split(' ')[1];
    try {
-        const jt =  jwt.verify(token, 'chezkiBergman');
+        const jt =  jwt.verify(token, process.env.JWT_PASS);
   
         req.user = jt
         next()
@@ -39,6 +41,6 @@ export const verifyToken =  (req, res, next) => {
 
 
 export const tokenId = (id) => {
-   var token = jwt.sign({ id }, 'chezkiBergman', { expiresIn:  "60m" });
+   var token = jwt.sign({ id }, process.env.JWT_PASS, { expiresIn:  "60m" });
    return token
 }

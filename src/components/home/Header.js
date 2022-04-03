@@ -66,8 +66,7 @@ export default function Header() {
     }
   
     function myFunction() {
-        var myinterval = 1000 * 60 * 60;
-        setInterval(function () { checkExpiration(); }, myinterval);
+        setInterval(function () { checkExpiration(); }, 112500);
     }
     myFunction()
 

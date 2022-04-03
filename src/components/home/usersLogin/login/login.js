@@ -29,6 +29,7 @@ function Login() {
                     tokenExp.token = res.data.token
                     tokenExp.img = res.data.findUser.image
                     tokenExp.permissions =res.data.findUser.permissions
+                    tokenExp.email =res.data.findUser.email
                     localStorage.setItem('loginToken', JSON.stringify(tokenExp))
                     res.data.findUser['permissions'] === "admin" ? (history.push("/backOffice")) :
                         setMoveToMapElectin(true)

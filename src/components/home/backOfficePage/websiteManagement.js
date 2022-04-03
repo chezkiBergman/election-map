@@ -49,16 +49,25 @@ export default function WebsiteManagement() {
             selector: row => row.pass,
         }, {
             name: "תרומות",
-            selector: row => <Button size="sm" variant="secondary" onClick={()=>setUserName(row.email)} onMouseDownCapture={donationHistory}>{row.sumDonationHistory}</Button>,
+            selector: row => <Button size="sm" variant="secondary" 
+            // onClick={()=>setUserName(row.email)}
+             onClick={()=>donationHistory(row.email)}
+             >{row.sumDonationHistory}</Button> ,
+          
         },
     
     ];
     
-    const donationHistory=()=>{
+    const donationHistory=(userName)=>{
+        setDonations('')
         setShowDonationHistory(!showDonationHistory)
-        console.log(userName);
+        setUserName(userName);
+       
         axios.get(`http://localhost:3003/users/checkDonationAmount/${userName}`, { headers: { "Authorization": `Bearer ${token['token']}` } })
       .then(res => {
+       if (res.data.msg == '0:00' ) {
+        return setDonations('')
+       }else{
         let lastElement = res.data.findUser[res.data.findUser.length - 1];
         console.log(lastElement);
           const dateDonations = res.data 
@@ -69,6 +78,8 @@ export default function WebsiteManagement() {
             }
              })
          setDonations({dateDonations, sumDonationHistory: lastElement.sumDonationHistory.toFixed(2)})
+            
+       }
         
       }).catch(function (error) {
           if (error.response) {
