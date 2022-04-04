@@ -66,7 +66,7 @@ export default function Header() {
     }
   
     function myFunction() {
-        setInterval(function () { checkExpiration(); }, 112500);
+        setInterval(function () { checkExpiration(); }, 1800000);
     }
     myFunction()
 

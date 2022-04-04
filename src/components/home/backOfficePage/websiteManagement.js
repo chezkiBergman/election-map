@@ -50,7 +50,7 @@ export default function WebsiteManagement() {
         }, {
             name: "תרומות",
             selector: row => <Button size="sm" variant="secondary" 
-            // onClick={()=>setUserName(row.email)}
+           
              onClick={()=>donationHistory(row.email)}
              >{row.sumDonationHistory}</Button> ,
           
@@ -128,14 +128,15 @@ export default function WebsiteManagement() {
     }, []);
 
     const cancel =()=>{
-        // setShow(!show)
-        setEditWindow(!editWindow)
+        setShow(!show)
+        setToggleCleared(!toggleCleared);
 
      }
     const contextActions = useMemo(() => {
         const handleDelete = () => {
             if (window.confirm(`אתה בטוח שברצונך למחוק את?:\r ${selectedRows.map(r => r.name)}?`)) {
                 setToggleCleared(!toggleCleared);
+
                 let newData;
                 for (let i = 0; i < selectedRows.length; i++) {
                     const element = selectedRows[i].name;
@@ -180,9 +181,9 @@ export default function WebsiteManagement() {
                 columns={columns}
                 data={data}
                 contextActions={show && contextActions}
-                selectableRows
+                selectableRows 
                 clearSelectedRows={toggleCleared}
-                onSelectedRowsChange={handleRowSelected}
+                onSelectedRowsChange ={handleRowSelected}
                 pagination
             />
    

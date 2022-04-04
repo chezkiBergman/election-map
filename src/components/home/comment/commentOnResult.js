@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
-import { Form, Button, Container } from "react-bootstrap"
+import { Form, Button, Container,Alert } from "react-bootstrap"
 import { InfoWindow } from "@react-google-maps/api"
 import { TextareaAutosize } from "@mui/material";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AiFillCloseCircle } from "react-icons/ai"
 
-// import ListCommentFromApi from "./listComment";
-// import React, { useState } from "react";
-// import "../App.css";
 
 
 
@@ -46,7 +43,7 @@ export default function Comment({ city, lat, lng, onCloseClick }) {
     const handelOnSubmit = (e) => {
 
         e.preventDefault()
-        // const token = JSON.parse(localStorage.getItem("loginToken"))
+       
         console.log({ comment, city })
         token ? (
             axios.post(`http://localhost:3003/users/postComment`,
@@ -88,8 +85,8 @@ export default function Comment({ city, lat, lng, onCloseClick }) {
                     })
                     ) : null}
                 {
-                    !listCommentApi.length && <div
-                        style={{ color: "goldenrod", fontWeight: 'bold', margin: "30px" }}>על עיר זו לא נכתבו תגובות</div>
+                    !listCommentApi.length && <Alert
+                        style={{ color: "goldenrod", fontWeight: 'bold', margin: "30px" }}>על עיר זו לא נכתבו תגובות</Alert>
                 }
 
                 <div style={{ display: "flex", }} >

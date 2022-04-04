@@ -1,7 +1,7 @@
-import { Router } from "express";
+import { json, Router } from "express";
 import { User } from "../db/usersdb.js";
 import { Comment } from "../db/commentOnMapDb.js";
-// import { PasswordReset } from "../db/passwordResetDb.js";
+import db from "../db/dbMapElection.js"
 import { compare, hash, tokenId, verifyToken } from "../aute.js";
 import { sendEmail } from "./sendMail.js";
 import crypto from "crypto"
@@ -29,6 +29,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 const userRouter = Router();
+
 
 
 userRouter.get('/checkExpiresIn', verifyToken, async (req, res) => {
@@ -65,9 +66,11 @@ userRouter.get('/getImageUser', verifyToken, async (req, res) => {
 
 userRouter.get('/getMapElectionGeoJson', verifyToken, (req, res) => {
   try {
+    
     const { user } = req
+    console.log(user)
     return res.status(200).send(mapElection);
-    // console.log(req.user);
+    ;
 
 
   } catch (err) {

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import { Form, Button, Container, FormControl, FormGroup, Alert } from "react-bootstrap";
 import { Redirect, useHistory } from "react-router-dom";
 import styles from './registertion.css';
@@ -22,7 +22,8 @@ function Registration() {
   const [emailErr, setEmailErr] = useState({});
   const [passwordErr, setPasswordErr] = useState({})
   const [error, setError] = useState("")
-
+  
+   const imageInputRef = useRef();
 
 
 
@@ -94,9 +95,9 @@ function Registration() {
       setPassword("")
       setName("")
       setSelectedImage("")
-      // window.location.reload()
+     
       return
-      // return history.push("/register")
+
     } else {
       token ? (setLoginAlready(true)) :
 
@@ -131,6 +132,12 @@ function Registration() {
     setEmailExsit(false)
 
   }
+  const deselect=()=>{
+    console.log(imageInputRef.current.value );
+    imageInputRef.current.value = "";
+    setSelectedImage("")
+    
+  }
 
   return (
 
@@ -140,9 +147,11 @@ function Registration() {
 
           <Container className='container'>
 
-            <h1 className='h1' style={{ margin: '15px', position: "absolute", left: "42%", color: "wheat" }}>הרשמה</h1>
+            <h1 className='h1'
+             style={{ margin: '15px', position: "absolute", left: "42%", color: "wheat" }}>הרשמה</h1>
 
-            <Form onSubmit={handleOnSubmit} enctype="multipart/form-data" style={{ top: '65%' }} className={styles.form}>
+            <Form onSubmit={handleOnSubmit} enctype="multipart/form-data"
+             style={{ top: '65%' }} className={styles.form}>
               {selectedImage ? (
                 <div style={{ textAlign: 'center', display: "flex", justifyContent: "space-between" }}>
                   <img
@@ -151,14 +160,16 @@ function Registration() {
                     style={{ width: '70px', borderRadius: '30px' }}
                     alt="Thumb"
                   />
-                  <Button onClick={() => (setSelectedImage(""))} style={{ margin: '5px', color: "wheat", fontWeight: "bold", left: "150px", top: "50px" }}>
+                  <Button onClick={deselect} 
+                  style={{ margin: '5px', color: "wheat", fontWeight: "bold", left: "150px", top: "50px" }}>
                     בטל את הבחירה
                   </Button>
                 </div>
               ) : null}
               <FormGroup className="mb-3" controlId="formBasicImage">
                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>בחר תמונת פרופיל</Form.Label>
-                <FormControl required="true" type="file" name='avatar' placeholder="upload your poto" defultvalue={selectedImage} onFocus={() => onFocus()} onChange={e => handleChange(e)} />
+                <FormControl required="true" ref={imageInputRef} type='file' name='avatar' placeholder="upload your poto" defultvalue={selectedImage}
+               onFocus={() => onFocus()} onChange={e => handleChange(e)} />
               </FormGroup>
 
 
@@ -180,8 +191,8 @@ function Registration() {
                 {passwordErr.password && <Alert variant="danger">{passwordErr.password}</Alert>}
                 <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" onFocus={() => onFocus()} value={password} onChange={e => onChangeAndValidPassword(e)} />
 
-                {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> 
-                : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
+                {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />
+                  : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
               </Form.Group>
 
               <Button variant="primary" type="submit" >
@@ -191,8 +202,8 @@ function Registration() {
                 emailExsit && (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-23%", width: "250px", textAlign: "center", }}>אימייל זה נמצא בשימוש!</Alert>)
               }
               {
-                loginAlready ? (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-23%", width: "250px", textAlign: "center", }}>הינך מחובר כבר למערכת</Alert>) 
-                : null
+                loginAlready ? (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-23%", width: "250px", textAlign: "center", }}>הינך מחובר כבר למערכת</Alert>)
+                  : null
               }
 
             </Form>

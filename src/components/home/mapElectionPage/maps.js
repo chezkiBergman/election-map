@@ -8,9 +8,7 @@ import Comment from "../comment/commentOnResult";
 import CommentOrMap from "../comment/CommentOrMap";
 // import * as geojson from './tableGeojson.json'
 import axios from "axios";
-import { Button, Table, Form } from "react-bootstrap";
-
-import { Redirect, useHistory, useLocation,} from "react-router-dom"
+import { useHistory, useLocation,} from "react-router-dom"
 // import Login from "../login/login"
 
 function Maps() {
