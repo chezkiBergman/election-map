@@ -1,7 +1,6 @@
 import { json, Router } from "express";
 import { User } from "../db/usersdb.js";
 import { Comment } from "../db/commentOnMapDb.js";
-import db from "../db/dbMapElection.js"
 import { compare, hash, tokenId, verifyToken } from "../aute.js";
 import { sendEmail } from "./sendMail.js";
 import crypto from "crypto"
