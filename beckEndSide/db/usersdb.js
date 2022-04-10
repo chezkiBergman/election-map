@@ -43,6 +43,10 @@ import mongoose from 'mongoose'
     sumDonationHistory:{
       type: Number,
       ref: 'Donation'
+    },
+    sumOfComments:{
+      type:Number,
+      default: 0
     }
   });
 

@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Form, Button, Container, Alert } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
+import Alert from "@mui/material/Alert";
 import styles from './login.css'
 import axios from "axios";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai"
@@ -23,7 +24,7 @@ function Login() {
             (setAlreadyLogin(true)) :
             axios.post(`http://localhost:3003/users/singIn`, { email, password })
                 .then(res => {
-
+                     console.log(res);
                     console.log(res.data.findUser['permissions']);
                     const tokenExp = {}
                     tokenExp.token = res.data.token
@@ -32,7 +33,7 @@ function Login() {
                     tokenExp.email =res.data.findUser.email
                     localStorage.setItem('loginToken', JSON.stringify(tokenExp))
                     res.data.findUser['permissions'] === "admin" ? (history.push("/backOffice")) :
-                        setMoveToMapElectin(true)
+                     setMoveToMapElectin(true)
                     window.location.reload()
 
                 }).catch(function (error) {
@@ -67,7 +68,8 @@ function Login() {
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>סיסמה</Form.Label>
                     <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" onFocus={(e) => setError("")} value={password} onChange={e => { setPassword(e.target.value) }} />
-                    {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "415px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "415px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
+                    {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "415px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> 
+                    : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "415px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
                 </Form.Group>
 
                 <Button style={{ margin: '2px' }} variant="primary" type="submit" >
@@ -87,10 +89,12 @@ function Login() {
             }
 
             {
-                error ? (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "32.1%", top: "25%" }}>{error}</Alert>) : null
+                error ? (<Alert variant="filled" severity="error"style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "42.1%", top: "25%" }}>{error}</Alert>) : null
             }
             {
-                alreadyLogin && <Alert variant="info" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "36%", top: "10%" }}>הינך מחובר לאתר, נא התנתק בטרם התחבר שוב</Alert>
+                alreadyLogin && <Alert variant="filled" severity="error"
+                style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "35.1%", top: "10%" }}
+                >הינך מחובר לאתר, נא התנתק בטרם התחבר שוב</Alert>
 
             }
 

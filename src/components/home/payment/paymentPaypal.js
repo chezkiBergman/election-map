@@ -1,6 +1,6 @@
 
 import { Form, FormControl,Button, Alert,Table } from 'react-bootstrap'
-
+import "./payment.css"
 import React, { useState,useEffect,useRef } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useHistory } from 'react-router-dom';
@@ -16,16 +16,18 @@ export default function ReactPayPal() {
      const [ErrorMessage, setErrorMessage] = useState("");
      const [orderID, setOrderID] = useState(false);
      const [donations, setDonations] = useState(null)
-     
+
+     const postOrDonate="donations"
     const history = useHistory()
  
     useEffect(() => {
       const token = JSON.parse(localStorage.getItem("loginToken"))
-      const userName =token.email;
+      
       if (!token ) {
         history.push("/login")
       }else{
-      axios.get(`http://localhost:3003/users/checkDonationAmount/${userName}`, { headers: { "Authorization": `Bearer ${token['token']}` } })
+       
+      axios.get(`http://localhost:3003/users/checkDonationAmount/${postOrDonate}`, { headers: { "Authorization": `Bearer ${token['token']}` } })
       .then(res => {
        
         let lastElement = res.data.findUser[res.data.findUser.length - 1];

@@ -24,23 +24,32 @@ export async function compare(reqPass, password) {
    return checkPass
 }
 
-export const verifyToken =  (req, res, next) => {
+export  const verifyToken =  (req, res, next) => {
    const { authorization } = req.headers;
    const token = authorization.split(' ')[1];
+   // const refreshToken =req.cookies
    try {
         const jt =  jwt.verify(token, process.env.JWT_PASS);
-  
         req.user = jt
         next()
    } catch (error) {
-      return  res.status(401).send(error,"Unauthorized");
+     if( error.message === 'jwt expired' ){
+     return res.status(401).send("jwt expired")
+   
+     }
+     if( error.message === 'invalid token' ){
+      return res.status(401).send("invalid token")
+   
    }
   
-   
+}
 }
 
-
 export const tokenId = (id) => {
-   var token = jwt.sign({ id }, process.env.JWT_PASS, { expiresIn:  "60m" });
-   return token
+  let tokens={}
+   const token = jwt.sign({ id }, process.env.JWT_PASS, { expiresIn:  "1m" });
+   const refreshToken = jwt.sign({id}, process.env.JWT_PASS,{expiresIn: "5h"})
+    tokens.token =token 
+   tokens.refreshToken =refreshToken
+   return tokens
 }

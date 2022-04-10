@@ -13,9 +13,7 @@ import { useHistory, useLocation,} from "react-router-dom"
 
 function Maps() {
     const location = useLocation()
-  
     const history = useHistory()
-    // console.log(location.state);
     const [center, setCenter] = useState({
         lat: 31.769976259220588,
         lng: 35.21176437257244,
@@ -30,6 +28,7 @@ function Maps() {
     const [activeMarker, setActiveMarker] = useState(null);
     const [posts, setPosts] = useState(null)
      const [url, setUrl] = useState("")
+     const token = JSON.parse(localStorage.getItem("loginToken"))
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: "AIzaSyCUrY424hTes0fcYES8JRw3eAde8yhcYkk" // ,
@@ -53,38 +52,38 @@ function Maps() {
         })
 
     }
+  
+    
+        
 
-
-
-
-    useEffect(() => {
-        // async
+    // useEffect(()=>{
+      
         function getResults() {
-            const token = JSON.parse(localStorage.getItem("loginToken"))
-            token ? (
-                axios.get(`http://localhost:3003/users/getMapElectionGeoJson`, { headers: { "Authorization": `Bearer ${token['token']}` } }).then(res => {
+            let newToken = JSON.parse(localStorage.getItem("newToken"))
+
+         console.log(newToken);
+            newToken ? (
+               axios.get(`http://localhost:3003/users/getMapElectionGeoJson`, { headers: { "Authorization": `Bearer ${newToken['token']}` } }).then(res => {
                     setPosts(res.data.features)
                     console.log(res);
-
+                   
                 }).catch(function (error) {
-                    if (error) {
-                        history.push("login")
-                    }
+                 
                     console.log(error);
                 })
             ) : history.push("login")
         }
-        getResults()
-        coalitionOrOpposition()
-        console.log(posts);
 
+        // getResults()
+        // coalitionOrOpposition()
 
+    //    console.log(posts);
+    // }, [])
 
-    }, [])
-
-
+   
+      
     const handleActiveMarker = (marker) => {
-
+        console.log(posts);
         posts?.forEach(city => {
             const sumCoalition = [city['properties']["yamina"], city['properties']["New Hope"], city['properties']["meretz"], city['properties']["labor party"], city['properties']["Blue and White"], city['properties']["Yisrael beiteinu"], city['properties']["United Arab List"], city['properties']["yesh atid"]]
             const sumOpposition = [city['properties']["likud"], city['properties']["Shas"], city['properties']["Religious Zionist Party"], city['properties']["joint list"], city['properties']["United Torah"]]
@@ -108,7 +107,12 @@ function Maps() {
     }
 
     const handleOnLoad = (map) => {
+       
+        getResults()
+        coalitionOrOpposition()
         mapRef.current = map;
+        const newPos = mapRef.current.getCenter().toJSON();
+        setCenter(newPos)
         // Store a reference to the google map instance in state
         // setMapRef(map);
         // console.log(mapRef);
@@ -117,7 +121,7 @@ function Maps() {
         posts && posts.map(city => {
             bounds.extend({ lat: city.geometry.coordinates[1], lng: city.geometry.coordinates[0] })
         })
-
+       
         map.fitBounds(bounds);
       
 
@@ -130,13 +134,22 @@ function Maps() {
     const clickedOnComment = () => {
         setClickedComment(false)
     }
+    const mapCenter=()=>{
+       console.log(mapRef?.current.center); 
+    
+        if (!mapRef.current) return;
+        const newPos = mapRef.current.getCenter().toJSON();
+        console.log(newPos);
+        setCenter(newPos);
+    
+    
+    }
 
     const renderMap = () => {
         return (
             <>
                 <GoogleMap
-                    // onCenterChanged={() =>  mapRef?.current.getCenter().toJSON()}
-
+                    onCenterChanged={() => mapCenter}
                     onZoomChanged={handleZoomChanged}
                     center={{ lat: center.lat, lng: center.lng }}
                     zoom={zoom}

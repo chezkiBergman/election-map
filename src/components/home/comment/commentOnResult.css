@@ -1,0 +1,47 @@
+.head{
+     background-color: rgb(172, 202, 228);
+     position: absolute;
+     display: flex;
+      left: 3%;
+     top: 3%;
+     min-height: 300px
+}
+.h3{
+ margin-inline: 80px;
+  color: goldenrod;
+}
+.listComment{
+     color: cornflowerblue;
+      font-weight: 300;
+      margin: 3px;
+
+}
+.imgComment{
+width: 25px;
+ border-radius: 20px;
+  margin-inline-end: 40px;
+}
+.noYetComment{
+     color: goldenrod;
+      font-Weight: bold;
+     margin: 30px;
+}
+.imgOfUser{
+ width: 25px; 
+ border-radius: 25px;
+  position: absolute;
+ left: 335px;
+  top: -143px;
+}
+.inputComment{
+     position: absolute;
+     width: 200px;
+      top: -119px;
+       left: 335px;
+}
+.sendComment{
+ position: absolute;
+  top: -22px;
+   left: 335px;
+    color: goldenrod;
+}

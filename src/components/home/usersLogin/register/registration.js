@@ -1,7 +1,8 @@
 
 import { useState, useEffect,useRef } from "react";
-import { Form, Button, Container, FormControl, FormGroup, Alert } from "react-bootstrap";
-import { Redirect, useHistory } from "react-router-dom";
+import { Form, Button, Container, FormControl, FormGroup } from "react-bootstrap";
+import Alert from "@mui/material/Alert";
+import { Redirect, useHistory,Link } from "react-router-dom";
 import styles from './registertion.css';
 import axios from "axios";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai"
@@ -175,34 +176,41 @@ function Registration() {
 
               <Form.Group className="mb-3" controlId="formBasicName">
                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }} >שם פרטי ומשפחה</Form.Label>
-                <Form.Control required="true" type="name" placeholder="Enter name" onFocus={() => onFocus()} value={name} onChange={e => { setName(e.target.value) }} />
+                <Form.Control required="true" type="name" placeholder="Enter name" onFocus={() => onFocus()}
+                 value={name} onChange={e => { setName(e.target.value) }} />
 
               </Form.Group>
 
 
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>אימייל</Form.Label>
-                {emailErr.email && <Alert style={{ height: "20px", display: "flex", alignItems: "center" }} variant="danger">{emailErr.email}</Alert>}
-                <Form.Control required="true" type="email" placeholder="Enter email" onFocus={() => onFocus()} value={email} onChange={e => onChangeAndValidMail(e)} />
+                {emailErr.email && <Alert variant="filled" severity="warning">{emailErr.email}</Alert>}
+                <Form.Control required="true" type="email" placeholder="Enter email" onFocus={() => onFocus()}
+                 value={email} onChange={e => onChangeAndValidMail(e)} />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>סיסמה</Form.Label>
-                {passwordErr.password && <Alert variant="danger">{passwordErr.password}</Alert>}
-                <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" onFocus={() => onFocus()} value={password} onChange={e => onChangeAndValidPassword(e)} />
+                {passwordErr.password && <Alert  variant="filled" severity="warning">{passwordErr.password}</Alert>}
+                <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" onFocus={() => onFocus()}
+                 value={password} onChange={e => onChangeAndValidPassword(e)} />
 
-                {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />
-                  : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
+                {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "300px", top: "-33px" }}
+                 onClick={() => setShowPassword(!showPassword)} />
+                  : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "300px", top: "-33px" }}
+                   onClick={() => setShowPassword(!showPassword)} />}
               </Form.Group>
 
               <Button variant="primary" type="submit" >
                 שלח
               </Button>
               {
-                emailExsit && (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-23%", width: "250px", textAlign: "center", }}>אימייל זה נמצא בשימוש!</Alert>)
+                emailExsit && (<Alert  variant="filled" severity="error" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-23%", width: "250px", textAlign: "center", }}
+                >אימייל זה נמצא בשימוש!</Alert>)
               }
               {
-                loginAlready ? (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-23%", width: "250px", textAlign: "center", }}>הינך מחובר כבר למערכת</Alert>)
+                loginAlready ? (<Alert variant="filled" severity="error" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-17%", width: "250px", textAlign: "center", }}
+                >הינך מחובר כבר למערכת</Alert>)
                   : null
               }
 
@@ -213,8 +221,17 @@ function Registration() {
 
           </Container>
 
-        ) : <Container style={{ position: "absolute", top: "20%" }}> <Alert style={{ margin: "auto", textDecoration: "none", textAlign: "center", }}>{registrationComplete['msg']}</Alert></Container>
-        /* <Alert variant="danger" style={{margin:"2px",textDecoration:"none",position: "absolute",left:"15%",top:"-23%",width:"250px",textAlign:"center",}}>בעוד 5 שניות תועבר אל דף התחברות לאתר!</Alert>} */
+        ) : <Container style={{ position: "absolute", top: "20%" }}> <Alert style={{ margin: "auto", textDecoration: "none", textAlign: "center", }}>{registrationComplete['msg']}<Link style={{textDecoration:"none",padding:"7px"}}
+        to='#'
+        target="_blank" 
+        onClick={(e) => {
+            window.location =`https://mail.google.com/`
+            e.preventDefault();
+        }}
+    >
+        האימייל
+    </Link></Alert></Container>
+      
       }
 
 

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from 'axios'
 import { useParams } from "react-router-dom";
 
+
 function ActivateNewUser() {
   const { token } = useParams()
   const[isTokenActivateExpired,setIsTokenActivateExpired]=useState(false)
@@ -30,11 +31,11 @@ function ActivateNewUser() {
 
 
     <Container style={{ position: 'absolute', top: "20%", maxWidth: '1280px' }}>
-      <Alert variant="info" style={{ margin: "auto", textDecoration: "none" }}>
+      <Alert  style={{ margin: "auto", textDecoration: "none" }}>
         {isTokenActivateExpired}
         {isTokenActivateExpired === 'שמך נקלט במערכת, ברוכים הבאים' ?(
         <Alert.Link style={{ textDecoration: "none" }} href="/login"> התחבר </Alert.Link>):
-        <Alert.Link style={{ textDecoration: "none" }} href="/register"> הירשם </Alert.Link>}
+        <Alert.Link variant="filled" severity="error" style={{ textDecoration: "none" }} href="/register"> הירשם </Alert.Link>}
 
       </Alert>
 

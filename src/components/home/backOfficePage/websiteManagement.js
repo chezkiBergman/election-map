@@ -1,36 +1,50 @@
 import DataTable from 'react-data-table-component';
-import { Button } from 'react-bootstrap';
+import OnlinePredictionIcon from '@mui/icons-material/OnlinePrediction';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Button from '@mui/material/Button';
 import { useCallback, useState, useMemo, useEffect } from 'react';
 import axios from 'axios'
 import { useHistory } from 'react-router-dom';
-import EditUser from '../usersLogin/editUser/editUser';
+import EditUsersByAdmin from "../backOfficePage/editUsersByAdmin"
 import HistoryOfDonations from '../payment/historyOfDonations';
+import HistoryOfComments from "./controlOnCommentsByAdmin"
+import  DeleteAccountByAdmin from "./deleteUserByAdmin"
+import { io } from "socket.io-client";
 
+const server = "http://localhost:3003";
 
 
 
 export default function WebsiteManagement() {
     const [selectedRows, setSelectedRows] = useState([])
     const [toggleCleared, setToggleCleared] = useState(false);
-    const[userName,setUserName]=useState("")
+    const [showCommentsHistory, setShowCommentsHistory] = useState(false)
     const [show, setShow] = useState(true)
     const [data, setData] = useState('')
-   const[ showDonationHistory,setShowDonationHistory]=useState(false)
-   const [donations, setDonations] = useState(null)
-    
-   const token = JSON.parse(localStorage.getItem("loginToken"))
-    const[editWindow,setEditWindow]=useState(false)
+    const [showDonationHistory, setShowDonationHistory] = useState(false)
+    const [donations, setDonations] = useState(null)
+    const [commentByUser, setCommentByUser] = useState('')
+    const[deleteAccount,setDeleteAccount]=useState("")
+    // const[isUserOnline,setIsUserOnline]=useState("")
+    const token = JSON.parse(localStorage.getItem("loginToken"))
+    const [editWindow, setEditWindow] = useState(false)
     const history = useHistory()
 
     const columns = [
+        {
+            name: 'מחובר',
+            selector: row =>  response &&  <p>{response}</p>
+            //  <OnlinePredictionIcon style={{color:isUserOnline}}/>
+        },
         {
             name: 'משתמש',
             selector: row => row.name,
         },
         {
             name: "תמונה",
-            selector: row => 
-           <img width={35} src={`http://localhost:3003/uploads/${row.image}`}/>
+            selector: row =>
+                <img width={35} src={`http://localhost:3003/uploads/${row.image}`} />
         },
         {
             name: 'פעילות חשבון',
@@ -49,53 +63,109 @@ export default function WebsiteManagement() {
             selector: row => row.pass,
         }, {
             name: "תרומות",
-            selector: row => <Button size="sm" variant="secondary" 
-           
-             onClick={()=>donationHistory(row.email)}
-             >{row.sumDonationHistory}</Button> ,
-          
-        },
-    
+            selector: row => <Button size="sm" variant="secondary"
+
+                onClick={() => donationHistory(row.email, 'donations')}
+            >{row.sumDonationHistory}</Button>,
+
+        }
+        , {
+            name: 'תגובות',
+            selector: row => <Button size="sm" variant="secondary"
+                onClick={() => commentsHistory(row.email, 'comments')}
+            >{row.sumOfComments}</Button>,
+        }
+
     ];
-    
-    const donationHistory=(userName)=>{
-        setDonations('')
-        setShowDonationHistory(!showDonationHistory)
-        setUserName(userName);
-       
-        axios.get(`http://localhost:3003/users/checkDonationAmount/${userName}`, { headers: { "Authorization": `Bearer ${token['token']}` } })
-      .then(res => {
-       if (res.data.msg == '0:00' ) {
-        return setDonations('')
-       }else{
-        let lastElement = res.data.findUser[res.data.findUser.length - 1];
-        console.log(lastElement);
-          const dateDonations = res.data 
-          && res.data.findUser?.map(i=>{
-            return{
-              donationAmount: i.donationAmount,
-              donationDate: i.date,
-            }
-             })
-         setDonations({dateDonations, sumDonationHistory: lastElement.sumDonationHistory.toFixed(2)})
-            
-       }
-        
-      }).catch(function (error) {
-          if (error.response) {
-              console.log({ data: error.response.data, status: error.response.status, headers: error.response.headers });
-          }
-      })
-      console.log(donations);
-    }
-    
+
+    const [response, setResponse] = useState("");
+
     useEffect(() => {
-       
+      const socket = io(server);
+      console.log(socket);
+      socket.on("chezki", data => {
+        setResponse(data);
+      });
+
+      return () => socket.disconnect("chezki");
+    }, []);
+  
+
+    const donationHistory = (userName, postOrDonate) => {
+        // setDonations('')
+        setShowDonationHistory(!showDonationHistory)
+
+        axios.get(`http://localhost:3003/admin/checkDonationAmount/${userName}/${postOrDonate}`, 
+        { headers: { "Authorization": `Bearer ${token['token']}` } },)
+            .then(res => {
+                if (res.data.msg == '0:00') {
+                    return setDonations('')
+                } else {
+                    let lastElement = res.data.findUser[res.data.findUser.length - 1];
+                    console.log(lastElement);
+                    const dateDonations = res.data
+                        && res.data.findUser?.map(i => {
+                            return {
+                                donationAmount: i.donationAmount,
+                                donationDate: i.date,
+                            }
+                        })
+                    setDonations({ dateDonations, sumDonationHistory: lastElement.sumDonationHistory.toFixed(2) })
+                }
+
+            }).catch(function (error) {
+                if (error.response) {
+                    console.log({
+                        data: error.response.data,
+                        status: error.response.status,
+                        headers: error.response.headers
+                    });
+                }
+            })
+
+        console.log(donations);
+
+    }
+
+
+    const commentsHistory = (userName, postOrDonate) => {
+        setShowCommentsHistory(!showCommentsHistory)
+        axios.get(`http://localhost:3003/admin/checkDonationAmount/${userName}/${postOrDonate}`, 
+        { headers: { "Authorization": `Bearer ${token['token']}` } })
+            .then(res => {
+                const posts = res.data
+                    && res.data.postByUser?.map(i => {
+                        return {
+                            city: i.city,
+                            comment: i.comment,
+                            name: i.name,
+                            image: i.image
+                        }
+                    })
+                setCommentByUser(posts)
+
+            }).catch(function (error) {
+                if (error.response) {
+                    console.log({
+                        data: error.response.data,
+                        status: error.response.status,
+                        headers: error.response.headers
+                    });
+                }
+            })
+        console.log(commentByUser);
+
+    }
+   
+    useEffect(() => {
+
         token ? (
-            axios.get(`http://localhost:3003/users/getAllUsers`, { headers: { "Authorization": `Bearer ${token['token']}` } })
+            axios.get(`http://localhost:3003/admin/getAllUsers`,
+             { headers: { "Authorization": `Bearer ${token['token']}`} })
                 .then(res => {
                     res.data.msg === "אין לך הרשאה לנתונים אלו" && history.push("/mapsElection")
-                    const list =
+
+                    const users =
                         res.data.users &&
                         res.data.users.map((m) => {
                             return {
@@ -105,15 +175,19 @@ export default function WebsiteManagement() {
                                 activateUserByMail: m.activateUserByMail,
                                 email: m.email,
                                 pass: m.pass,
-                                sumDonationHistory: m.sumDonationHistory
+                                sumDonationHistory: m.sumDonationHistory,
+                                sumOfComments: m.sumOfComments
                             };
                         });
 
-                    setData(list)
+                    setData(users)
+
                     console.log(res.data);
                 }).catch(function (error) {
                     if (error.response) {
-                        console.log({ data: error.response.data, status: error.response.status, headers: error.response.headers });
+                        console.log({ data: error.response.data, 
+                            status: error.response.status,
+                             headers: error.response.headers });
                     }
                 })
 
@@ -127,69 +201,73 @@ export default function WebsiteManagement() {
         console.log(state.selectedRows);
     }, []);
 
-    const cancel =()=>{
+    const cancel = () => {
         setShow(!show)
         setToggleCleared(!toggleCleared);
 
-     }
+    }
     const contextActions = useMemo(() => {
         const handleDelete = () => {
             if (window.confirm(`אתה בטוח שברצונך למחוק את?:\r ${selectedRows.map(r => r.name)}?`)) {
                 setToggleCleared(!toggleCleared);
+                setDeleteAccount(selectedRows.map(r => r.email))
 
                 let newData;
                 for (let i = 0; i < selectedRows.length; i++) {
                     const element = selectedRows[i].name;
-                     newData = data.filter(item => item.name !== element)
+                    newData = data.filter(item => item.name !== element)
                 }
                 console.log(newData);
                 setData(newData);
             }
         };
-        
-         
-        
-     
+
+
+
+
         return (
 
             <>
-                <Button key="cancel" onClick={()=>cancel()} style={{ backgroundColor: 'blue' }} icon>
+            {deleteAccount && <DeleteAccountByAdmin userName={deleteAccount}/>}
+                <Button key="cancel" onClick={() => cancel()}variant="outlined"  icon="true">
                     בטל
                 </Button>
-                <Button key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }} icon>
-                    מחק
+                <Button key="delete" onClick={handleDelete} variant="outlined" icon="true"><DeleteIcon/>
+                    
                 </Button>
-                <Button key="edit" onClick={()=>setEditWindow(!editWindow)} style={{ backgroundColor: 'green' }} icon>
-                    ערוך
+                <Button key="edit" onClick={() => setEditWindow(!editWindow)}  variant="outlined"><EditIcon/>
+                    
                 </Button>
 
 
             </>
 
         );
-        
+
     }, [data, selectedRows, toggleCleared]);
 
-   
+
     return (
         <div>
-{
-   editWindow  ? ( <div> <EditUser/><Button style={{position:"absolute"}} onClick={()=>cancel() }>ביטול</Button></div>
-   ):
-            <DataTable
-                title= { "ניהול דפי משתמשים"}
-                columns={columns}
-                data={data}
-                contextActions={show && contextActions}
-                selectableRows 
-                clearSelectedRows={toggleCleared}
-                onSelectedRowsChange ={handleRowSelected}
-                pagination
-            />
-   
-}
-{donations && showDonationHistory ?( <HistoryOfDonations donations={donations} />):null}
-</div>
+            {
+                editWindow ? (<div> <EditUsersByAdmin /><Button variant="contained"   style={{ position: "absolute" }}
+                 onClick={() => cancel()}>ביטול</Button></div>
+                ) :
+                    <DataTable
+                        title={"ניהול דפי משתמשים"}
+                        columns={columns}
+                        data={data}
+                        contextActions={show && contextActions}
+                        selectableRows
+                        clearSelectedRows={toggleCleared}
+                        onSelectedRowsChange={handleRowSelected}
+                        pagination
+                    />
+
+            }
+            {donations && showDonationHistory ? (<HistoryOfDonations donations={donations} />) : null}
+            {commentByUser && showCommentsHistory?(<HistoryOfComments commentByUser={commentByUser}/>):null }
+        </div>
 
     )
 }

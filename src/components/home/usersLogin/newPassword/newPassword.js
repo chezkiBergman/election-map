@@ -24,7 +24,7 @@ function NewPass() {
     const [showPassword, setShowPassword] = useState(false)
     const [passwordErr, setPasswordErr] = useState({})
     const [passNotEqual, setPassNotEqual] = useState(false)
-
+    const [error, setError] = useState("")
     const history = useHistory()
     const setNewPassword = (e) => {
         if (passwordErr.password || passNotEqual) {
@@ -42,6 +42,8 @@ function NewPass() {
 
                 }).catch(function (error) {
                     console.log(error);
+                    setError(error.response.data.msg)
+                  
                 });
             e.preventDefault()
             setPassword("")
@@ -82,7 +84,7 @@ function NewPass() {
             <Container>
                 {isMsg === false ? (
                     <Container >
-                        <h1 className='h1' style={{ margin: '15px', position: "absolute", left: "42%", color: "wheat" }}>איפוס סיסמה</h1>
+                        <h1 className='h1' style={{ margin: '15px', position: "absolute", left: "42.1%", color: "wheat" }}>איפוס סיסמה</h1>
 
                         <Form onSubmit={setNewPassword}>
                             <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -101,6 +103,9 @@ function NewPass() {
                                 שלח
                             </Button>
                         </Form>
+                        {
+                error ? (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "42.1%", top: "20%" }}>{error}</Alert>) : null
+            }
                     </Container>
                 ) : <Container> <h1 className='h1' style={{ position: "absolute", top: "20%", left: "19.6%", color: "wheat" }}>הסיסמה החדשה עודכנה, מועבר להתחברות</h1></Container>
 

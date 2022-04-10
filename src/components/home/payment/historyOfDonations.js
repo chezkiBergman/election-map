@@ -6,14 +6,14 @@ export default function HistoryOfDonations({donations}){
       return(
     <div  style={{position: 'absolute',width:"300px",backgroundColor:"white",textAlign:"center", color: 'cadetblue', fontSize: '18px',fontWeight: 'bold',margin:"5px"}}>היסטוריית תרומות
     <Table striped bordered hover size="sm">
-      <thead><tr><th>*</th><th>סכום</th><th>תאריך</th></tr></thead><tbody>{donations.dateDonations.map(item=>{
+      <thead><tr><th>*</th><th>סכום</th><th>תאריך</th></tr></thead><tbody>{donations.dateDonations.map((item,i)=>{
         return(
-         <tr>
+           <tr key={i}>
            <td></td>
            <td>{item.donationAmount}$</td>
            <td>{item.donationDate}</td>
            </tr>
-         )})}<tr><th>סה"כ</th><td rowSpan={3} colSpan={3}>{donations.sumDonationHistory}$</td></tr> </tbody></Table></div>
+         )})}<tr><th>סה"כ</th><td rowSpan={3}colSpan={3}>{donations.sumDonationHistory}$</td></tr> </tbody></Table></div>
 
       )
         }
