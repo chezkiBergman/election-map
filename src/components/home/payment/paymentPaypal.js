@@ -6,7 +6,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import HistoryOfDonations from './historyOfDonations';
-
+const token = JSON.parse(localStorage.getItem("loginToken"))
 
 export default function ReactPayPal() {
 
@@ -21,7 +21,7 @@ export default function ReactPayPal() {
     const history = useHistory()
  
     useEffect(() => {
-      const token = JSON.parse(localStorage.getItem("loginToken"))
+    
       
       if (!token ) {
         history.push("/login")

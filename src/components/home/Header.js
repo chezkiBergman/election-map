@@ -39,12 +39,13 @@ export default function Header() {
 
     const logOutFunc = () => {
         localStorage.removeItem("loginToken")
+        clearInterval(checkTokenValid)
         setTokenValid("")
         setImage("")
         history.push('/login')
 
     }
-    useEffect(()=>{
+   
         async function createNewToken() {
            try {
             let newToken = JSON.parse(localStorage.getItem("loginToken"))
@@ -53,9 +54,9 @@ export default function Header() {
              const accessToken = response.data.accessToken
              if (accessToken){
             newToken['token'] = accessToken
-            localStorage.removeItem("loginToken")
-            localStorage.setItem("newToken",JSON.stringify(newToken))
-            
+            console.log(newToken);
+            localStorage.setItem('loginToken',JSON.stringify(newToken))
+            return
              }
              return
             }
@@ -64,10 +65,14 @@ export default function Header() {
            }
             
          }
-    
-         createNewToken()
+       let  checkTokenValid
+         useEffect(()=>{
+         checkTokenValid = setInterval(function () {
+            createNewToken()
+         }, 2 * 60 * 1000)
+         },[])
        
-        }, [])
+        
 
     useEffect(() => {
         
@@ -85,7 +90,7 @@ export default function Header() {
     }, [tokenValid, state])
 
 
-    useEffect(() => {
+     useEffect(() => {
         !token && logOutFunc()
     }, [token])
 
@@ -113,7 +118,7 @@ export default function Header() {
                     ))}
                     {tokenValid &&
                         <NavDropdown drop="start" style={{ position: "absolute", right: "5px", top: "-5px" }}
-                            title={<img className="pull-left" style={{ width: "47px", borderRadius: "25px" }} src={image} />} id="navbarScrollingDropdown">
+                            title={<img className="pull-left" style={{ width: "30px", borderRadius: "25px" }} src={image} />} id="navbarScrollingDropdown">
                             <NavDropdown.Item href="/login" onClick={() => { logOutFunc() }}>התנתק</NavDropdown.Item>
                             {linkToBackOfficePage ? (<NavDropdown.Item href="/backOffice">ניהול דפי משתמשים</NavDropdown.Item>) : null}
                             <NavDropdown.Item href="/editUser">ערוך פרופיל</NavDropdown.Item>

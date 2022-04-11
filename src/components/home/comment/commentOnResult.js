@@ -12,15 +12,16 @@ export default function Comment({ city, lat, lng, onCloseClick }) {
     const history = useHistory()
     const [comment, setComment] = useState("")
     const [listCommentApi, setListCommentApi] = useState([])
-    const [isClick, setIsClick] = useState(false)
+    // const [isClick, setIsClick] = useState(true)
     const [url, setUrl] = useState('')
+    const [edit, setEdit] = useState(null)
 
 
 
     useEffect(() => {
         async function getResults() {
             try {
-
+                
                 if (token) {
                     const results = await axios.get(`http://localhost:3003/users/getPostComment/${city}`,
                         { headers: { "Authorization": `Bearer ${token['token']}` } })
@@ -28,39 +29,38 @@ export default function Comment({ city, lat, lng, onCloseClick }) {
                     setListCommentApi(results.data.comments)
                     setUrl(`http://localhost:3003/uploads/${token['token']}`)
 
-                } else history.push("login")
+                } 
 
             } catch (error) {
                 console.log(error);
             }
         }
         getResults()
-    }, [isClick])
+    }, [comment])
 
     console.log(listCommentApi);
     const handelOnSubmit = (e) => {
-
+      
         e.preventDefault()
        
         console.log({ comment, city })
-        token ? (
+        token &&
             axios.post(`http://localhost:3003/users/postComment`,
                 { comment, city },
                 { headers: { "Authorization": `Bearer ${token['token']}` } })
                 .then(res => {
                     console.log(res);
                     setComment("")
-                    setIsClick(true)
+                   
                 }).catch(function (error) {
                     console.log(error);
                 })
 
-        ) : history.push("login")
+        
     }
 
 
-    const [edit, setEdit] = useState(null)
-
+   
 
     return (
         <Container className='head'

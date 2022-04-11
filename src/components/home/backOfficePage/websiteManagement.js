@@ -192,26 +192,33 @@ export default function WebsiteManagement() {
                 })
 
         ) : history.push("/login")
-    }, [selectedRows])
+    }, [selectedRows,commentByUser])
 
-
+    function changeComment (comments){
+        setCommentByUser(comments)
+       }
+       
 
     const handleRowSelected = useCallback(state => {
         setSelectedRows(state.selectedRows);
-        console.log(state.selectedRows);
+     if ( state.selectedRows.length >1 ) {
+         setToggleCleared(!toggleCleared)
+         setSelectedRows("")
+     }
     }, []);
 
     const cancel = () => {
-        setShow(!show)
+        setShow(true)
         setToggleCleared(!toggleCleared);
 
     }
     const contextActions = useMemo(() => {
         const handleDelete = () => {
-            if (window.confirm(`אתה בטוח שברצונך למחוק את?:\r ${selectedRows.map(r => r.name)}?`)) {
+            if (window.confirm(`אתה בטוח שברצונך למחוק את?:\r ${selectedRows?.map(r => r.name)}?`)) {
                 setToggleCleared(!toggleCleared);
-                setDeleteAccount(selectedRows.map(r => r.email))
-
+                console.log(selectedRows);
+                setDeleteAccount(selectedRows?.map(r => r.email))
+                console.log(toggleCleared);
                 let newData;
                 for (let i = 0; i < selectedRows.length; i++) {
                     const element = selectedRows[i].name;
@@ -221,7 +228,6 @@ export default function WebsiteManagement() {
                 setData(newData);
             }
         };
-
 
 
 
@@ -243,7 +249,7 @@ export default function WebsiteManagement() {
             </>
 
         );
-
+    
     }, [data, selectedRows, toggleCleared]);
 
 
@@ -251,7 +257,7 @@ export default function WebsiteManagement() {
         <div>
             {
                 editWindow ? (<div> <EditUsersByAdmin /><Button variant="contained"   style={{ position: "absolute" }}
-                 onClick={() => cancel()}>ביטול</Button></div>
+                 onClick={() => setEditWindow(!editWindow)}>ביטול</Button></div>
                 ) :
                     <DataTable
                         title={"ניהול דפי משתמשים"}
@@ -266,7 +272,7 @@ export default function WebsiteManagement() {
 
             }
             {donations && showDonationHistory ? (<HistoryOfDonations donations={donations} />) : null}
-            {commentByUser && showCommentsHistory?(<HistoryOfComments commentByUser={commentByUser}/>):null }
+            {commentByUser && showCommentsHistory?(<HistoryOfComments changeComment={changeComment} commentByUser={commentByUser}/>):null }
         </div>
 
     )

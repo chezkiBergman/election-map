@@ -20,15 +20,14 @@ export default function Search({ onSearch }) {
   const resultFromApi =async(e)=>{
       setCity(e.target.value) 
       const token = JSON.parse(localStorage.getItem("loginToken"))
-    if( token ){
+      if (token){
       const results = await axios.get(`http://localhost:3003/users/getMapElectionGeoJson`, { headers: { "Authorization": `Bearer ${token['token']}` } });
       const citys = results.data.features
       const obj = citys.filter(c => c.properties.City.includes(city))
      setResultSearch(obj)
-     
-    //  console.log(resultSearch);
-     } else{ history.push("login")}
-    }
+      }
+   
+  }
     const clickList =(c)=>{
       setCity(c)
       setResultSearch("")

@@ -33,23 +33,25 @@ const userRouter = Router();
 
 userRouter.get('/createNewToken',  async (req, res) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
-    if(!refreshToken) return res.sendStatus(401);
+   
     const { authorization } = req.headers;
     const token = authorization.split(' ')[1];
+   console.log(token);
     if(!token) return res.sendStatus(401);
-     jwt.verify(token, process.env.JWT_PASS,(err, decoded) => {
-      if(err)  jwt.verify(refreshToken, process.env.JWT_PASS, (err, decoded) => {
-        if(err) return res.sendStatus(403,"refreshToken expire");
-        const accessToken = jwt.sign({id:decoded.id}, process.env.JWT_PASS, { expiresIn:  "60m" });
-        res.json({ accessToken });
-      })
-    return
-     
-    })
+    const jt =  jwt.verify(token, process.env.JWT_PASS);
+    const accessToken = jwt.sign({id:jt.id}, process.env.JWT_PASS, { expiresIn:  "20m" });
+    return res.json({accessToken})
    
   } catch (err) {
-    console.log(err);
+    if( err.message === 'jwt expired' ){
+      const refreshToken = req.cookies.refreshToken;
+      if(!refreshToken) return res.sendStatus(401);
+      const  checkRefresh= jwt.verify(refreshToken, process.env.JWT_PASS)
+      if(!checkRefresh)return res.sendStatus(403,"refreshToken expire");
+    const accessToken = jwt.sign({id:checkRefresh.id}, process.env.JWT_PASS, { expiresIn:"20m" });
+    console.log(accessToken);
+     return res.json({ accessToken });
+    }
     res.json({msg:err.message})
   }
 })

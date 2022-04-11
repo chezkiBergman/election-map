@@ -52,17 +52,17 @@ function Maps() {
         })
 
     }
-  
+
     
         
 
-    // useEffect(()=>{
+    useEffect(()=>{
       
         function getResults() {
-            let newToken = JSON.parse(localStorage.getItem("newToken"))
-
+            let newToken = JSON.parse(localStorage.getItem("loginToken"))
+            
          console.log(newToken);
-            newToken ? (
+        newToken ? (
                axios.get(`http://localhost:3003/users/getMapElectionGeoJson`, { headers: { "Authorization": `Bearer ${newToken['token']}` } }).then(res => {
                     setPosts(res.data.features)
                     console.log(res);
@@ -74,11 +74,11 @@ function Maps() {
             ) : history.push("login")
         }
 
-        // getResults()
-        // coalitionOrOpposition()
+        getResults()
+        coalitionOrOpposition()
 
-    //    console.log(posts);
-    // }, [])
+       console.log(posts);
+    }, [])
 
    
       
@@ -108,8 +108,6 @@ function Maps() {
 
     const handleOnLoad = (map) => {
        
-        getResults()
-        coalitionOrOpposition()
         mapRef.current = map;
         const newPos = mapRef.current.getCenter().toJSON();
         setCenter(newPos)
@@ -150,7 +148,7 @@ function Maps() {
             <>
                 <GoogleMap
                     onCenterChanged={() => mapCenter}
-                    onZoomChanged={handleZoomChanged}
+                    onZoomChanged={()=>handleZoomChanged(zoom)}
                     center={{ lat: center.lat, lng: center.lng }}
                     zoom={zoom}
                     onLoad={handleOnLoad}
