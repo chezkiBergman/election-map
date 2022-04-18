@@ -2,14 +2,18 @@
 Website for mapping the election results in Israel 2021 by cities And the abilty for users to comment on the results
 the results were taken from Central Election Commission without latitude and longitude and converted to geojson file by https://workspace.google.com/marketplace/app/geocode_by_awesome_table/904124517349 the map is imported from a library "@react-google-maps/api"
 client side made by React and server side by Nodejs and the database in MongoDB. . It is possible to donate to the website through the PayPal service
-The website includes admin-interface. 
-
-![image](https://user-images.githubusercontent.com/80212235/162636496-1d189c18-60ca-4556-a936-ea377f96a115.png)![‏‏צילום מסך (50)](https://user-
-
-![‏‏צילום מסך (51)](https://user-images.githubusercontent.com/80212235/162636821-af4fcb60-0949-483b-9fb4-c9cdddb3fb99.png)
-![‏‏צילום מסך (52)](https://user-images.githubusercontent.com/80212235/162636829-d716dc48-34bd-4c3f-93ac-6365e8176d17.png)
+The website includes admin-interface. Indicator in the admin interface if the user is logged in and a massege to all users of the site about a guest on the website
 
 
+
+![‏‏צילום מסך (60)](https://user-images.githubusercontent.com/80212235/162967226-ec280610-64fd-4bcc-ad2b-8dc93d982e3f.png)
+
+![‏‏צילום מסך (57)](https://user-images.githubusercontent.com/80212235/162967145-cc068104-707e-48c4-9950-5f6b7957a92a.png)
+![‏‏צילום מסך (58)](https://user-images.githubusercontent.com/80212235/162967174-2cb2d02b-bec1-4e90-a264-0a876c30b9f6.png)
+
+![‏‏צילום מסך (59)](https://user-images.githubusercontent.com/80212235/162967010-7520f253-082b-4d2e-92dd-069876543fdd.png)
+
+![‏‏צילום מסך (55)](https://user-images.githubusercontent.com/80212235/162966134-eafc51e2-070a-4507-ba04-d3daadf64959.png)
 
 
 
