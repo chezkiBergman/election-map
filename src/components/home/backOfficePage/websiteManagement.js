@@ -9,10 +9,8 @@ import { useHistory } from 'react-router-dom';
 import EditUsersByAdmin from "../backOfficePage/editUsersByAdmin"
 import HistoryOfDonations from '../payment/historyOfDonations';
 import HistoryOfComments from "./controlOnCommentsByAdmin"
-import  DeleteAccountByAdmin from "./deleteUserByAdmin"
-import { io } from "socket.io-client";
-
-const server = "http://localhost:3003";
+import DeleteAccountByAdmin from "./deleteUserByAdmin"
+const token = JSON.parse(localStorage.getItem("loginToken"))
 
 
 
@@ -25,17 +23,18 @@ export default function WebsiteManagement() {
     const [showDonationHistory, setShowDonationHistory] = useState(false)
     const [donations, setDonations] = useState(null)
     const [commentByUser, setCommentByUser] = useState('')
-    const[deleteAccount,setDeleteAccount]=useState("")
-    // const[isUserOnline,setIsUserOnline]=useState("")
-    const token = JSON.parse(localStorage.getItem("loginToken"))
+    const [deleteAccount, setDeleteAccount] = useState("")
+
+   
     const [editWindow, setEditWindow] = useState(false)
     const history = useHistory()
 
     const columns = [
         {
             name: 'מחובר',
-            selector: row =>  response &&  <p>{response}</p>
-            //  <OnlinePredictionIcon style={{color:isUserOnline}}/>
+            selector: row => <OnlinePredictionIcon style={{ color: row.isUserOnline == true ? 'green' : 'red' }} />
+
+
         },
         {
             name: 'משתמש',
@@ -78,74 +77,118 @@ export default function WebsiteManagement() {
 
     ];
 
-    const [response, setResponse] = useState("");
 
-    useEffect(() => {
-      const socket = io(server);
-      console.log(socket);
-      socket.on("chezki", data => {
-        setResponse(data);
-      });
-
-      return () => socket.disconnect("chezki");
-    }, []);
-  
 
     const donationHistory = (userName, postOrDonate) => {
-        // setDonations('')
         setShowDonationHistory(!showDonationHistory)
+        token &&
+            axios.get(`admin/checkDonationAmount/${userName}/${postOrDonate}`,
+               
+                )
+                .then(res => {
+                    if (res.data.msg == '0:00') {
+                        return setDonations('')
+                    } else {
+                        let lastElement = res.data.findUser[res.data.findUser.length - 1];
+                        console.log(lastElement);
+                        const dateDonations = res.data
+                            && res.data.findUser?.map(i => {
+                                return {
+                                    donationAmount: i.donationAmount,
+                                    donationDate: i.date,
+                                }
+                            })
+                        setDonations({ dateDonations, sumDonationHistory: lastElement.sumDonationHistory.toFixed(2) })
+                    }
 
-        axios.get(`http://localhost:3003/admin/checkDonationAmount/${userName}/${postOrDonate}`, 
-        { headers: { "Authorization": `Bearer ${token['token']}` } },)
-            .then(res => {
-                if (res.data.msg == '0:00') {
-                    return setDonations('')
-                } else {
-                    let lastElement = res.data.findUser[res.data.findUser.length - 1];
-                    console.log(lastElement);
-                    const dateDonations = res.data
-                        && res.data.findUser?.map(i => {
-                            return {
-                                donationAmount: i.donationAmount,
-                                donationDate: i.date,
-                            }
-                        })
-                    setDonations({ dateDonations, sumDonationHistory: lastElement.sumDonationHistory.toFixed(2) })
-                }
+                }).catch(function (error) {
+                    if (error.response) {
 
-            }).catch(function (error) {
-                if (error.response) {
-                    console.log({
-                        data: error.response.data,
-                        status: error.response.status,
-                        headers: error.response.headers
-                    });
-                }
-            })
+                        console.log({
+                            data: error.response.data,
+                            status: error.response.status,
+                            headers: error.response.headers
+                        });
+                    }
+                })
 
         console.log(donations);
 
     }
 
 
-    const commentsHistory = (userName, postOrDonate) => {
-        setShowCommentsHistory(!showCommentsHistory)
-        axios.get(`http://localhost:3003/admin/checkDonationAmount/${userName}/${postOrDonate}`, 
-        { headers: { "Authorization": `Bearer ${token['token']}` } })
-            .then(res => {
-                const posts = res.data
-                    && res.data.postByUser?.map(i => {
-                        return {
-                            city: i.city,
-                            comment: i.comment,
-                            name: i.name,
-                            image: i.image
-                        }
-                    })
-                setCommentByUser(posts)
+    async function checkDonationAmountAndComments(userName,postOrDonate) {
+        try {
+          const  response = await axios.get(`admin/checkDonationAmount/${userName}/${postOrDonate}`)
 
-            }).catch(function (error) {
+            const posts = response.data
+                && response.data.postByUser?.map(i => {
+                    return {
+                        city: i.city,
+                        comment: i.comment,
+                        name: i.name,
+                        image: i.image
+                    }
+                })
+            setCommentByUser(posts)
+            // getUsers()
+        } catch (error) {
+            if (error.response) {
+                console.log({
+                    data: error.response.data,
+                    status: error.response.status,
+                    headers: error.response.headers
+                });
+            }
+        }
+
+        console.log(commentByUser);
+
+    }
+
+
+    const commentsHistory =async (userName, postOrDonate) => {
+        setShowCommentsHistory(!showCommentsHistory)
+        await checkDonationAmountAndComments(userName,postOrDonate)
+    }
+
+
+
+
+
+
+
+    useEffect(() => {
+
+        function getUsers(){
+            token ? (
+            axios.get(`admin/getAllUsers`,
+          
+            ).then(res => {
+                res.data.msg === "אין לך הרשאה לנתונים אלו" && history.push("/mapsElection")
+
+                const users =
+                    res.data.users &&
+                    res.data.users.map((m) => {
+                        return {
+                            name: m.name,
+                            permissions: m.permissions,
+                            image: m.image,
+                            activateUserByMail: m.activateUserByMail,
+                            isUserOnline: m.isUserOnline,
+                            email: m.email,
+                            pass: m.pass,
+                            sumDonationHistory: m.sumDonationHistory,
+                            sumOfComments: m.sumOfComments
+                        };
+                    });
+
+                setData(users)
+
+                console.log(res.data);
+            }).catch(async function (error) {
                 if (error.response) {
+
                     console.log({
                         data: error.response.data,
                         status: error.response.status,
@@ -153,58 +196,24 @@ export default function WebsiteManagement() {
                     });
                 }
             })
-        console.log(commentByUser);
+            ) : history.push("/login")
 
-    }
-   
-    useEffect(() => {
-
-        token ? (
-            axios.get(`http://localhost:3003/admin/getAllUsers`,
-             { headers: { "Authorization": `Bearer ${token['token']}`} })
-                .then(res => {
-                    res.data.msg === "אין לך הרשאה לנתונים אלו" && history.push("/mapsElection")
-
-                    const users =
-                        res.data.users &&
-                        res.data.users.map((m) => {
-                            return {
-                                name: m.name,
-                                permissions: m.permissions,
-                                image: m.image,
-                                activateUserByMail: m.activateUserByMail,
-                                email: m.email,
-                                pass: m.pass,
-                                sumDonationHistory: m.sumDonationHistory,
-                                sumOfComments: m.sumOfComments
-                            };
-                        });
-
-                    setData(users)
-
-                    console.log(res.data);
-                }).catch(function (error) {
-                    if (error.response) {
-                        console.log({ data: error.response.data, 
-                            status: error.response.status,
-                             headers: error.response.headers });
-                    }
-                })
-
-        ) : history.push("/login")
+        }
+       
+        getUsers()
     }, [selectedRows,commentByUser])
 
-    function changeComment (comments){
+    function changeComment(comments) {
         setCommentByUser(comments)
-       }
-       
+    }
+
 
     const handleRowSelected = useCallback(state => {
         setSelectedRows(state.selectedRows);
-     if ( state.selectedRows.length >1 ) {
-         setToggleCleared(!toggleCleared)
-         setSelectedRows("")
-     }
+        if (state.selectedRows.length > 1) {
+            setToggleCleared(!toggleCleared)
+            setSelectedRows("")
+        }
     }, []);
 
     const cancel = () => {
@@ -214,7 +223,8 @@ export default function WebsiteManagement() {
     }
     const contextActions = useMemo(() => {
         const handleDelete = () => {
-            if (window.confirm(`אתה בטוח שברצונך למחוק את?:\r ${selectedRows?.map(r => r.name)}?`)) {
+            if (window.confirm(`אתה בטוח שברצונך למחוק את?:\r
+             ${selectedRows?.map(r => r.name)}?`)) {
                 setToggleCleared(!toggleCleared);
                 console.log(selectedRows);
                 setDeleteAccount(selectedRows?.map(r => r.email))
@@ -234,30 +244,31 @@ export default function WebsiteManagement() {
         return (
 
             <>
-            {deleteAccount && <DeleteAccountByAdmin userName={deleteAccount}/>}
-                <Button key="cancel" onClick={() => cancel()}variant="outlined"  icon="true">
+                {deleteAccount && <DeleteAccountByAdmin userName={deleteAccount} />}
+                <Button key="cancel" onClick={() => cancel()} variant="outlined" icon="true">
                     בטל
                 </Button>
-                <Button key="delete" onClick={handleDelete} variant="outlined" icon="true"><DeleteIcon/>
-                    
+                <Button key="delete" onClick={handleDelete} variant="outlined" icon="true"><DeleteIcon />
+
                 </Button>
-                <Button key="edit" onClick={() => setEditWindow(!editWindow)}  variant="outlined"><EditIcon/>
-                    
+                <Button key="edit" onClick={() => setEditWindow(!editWindow)} variant="outlined"><EditIcon />
+
                 </Button>
 
 
             </>
 
         );
-    
+
     }, [data, selectedRows, toggleCleared]);
 
 
     return (
         <div>
             {
-                editWindow ? (<div> <EditUsersByAdmin /><Button variant="contained"   style={{ position: "absolute" }}
-                 onClick={() => setEditWindow(!editWindow)}>ביטול</Button></div>
+                editWindow ? (<div> <EditUsersByAdmin /><Button variant="contained"
+                    style={{ position: "absolute" }}
+                    onClick={() => setEditWindow(!editWindow)}>ביטול</Button></div>
                 ) :
                     <DataTable
                         title={"ניהול דפי משתמשים"}
@@ -272,7 +283,7 @@ export default function WebsiteManagement() {
 
             }
             {donations && showDonationHistory ? (<HistoryOfDonations donations={donations} />) : null}
-            {commentByUser && showCommentsHistory?(<HistoryOfComments changeComment={changeComment} commentByUser={commentByUser}/>):null }
+            {commentByUser && showCommentsHistory ? (<HistoryOfComments changeComment={changeComment} commentByUser={commentByUser} />) : null}
         </div>
 
     )

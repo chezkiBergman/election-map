@@ -1,5 +1,6 @@
 import express from 'express'
 import {db} from './db/connectionDb.js'
+import {checkIfAdminAndAuth } from "./aute.js"
 import dotenv from 'dotenv'
 import  cookieParser from 'cookie-parser'
 dotenv.config()
@@ -26,28 +27,27 @@ app.use(cors({ credentials:true, origin:'http://localhost:3000' }));
 app.use(express.json());
  
 
+// io.on("connection", (socket) => {
+//   getApiAndEmit(socket)
 
-let interval;
-let users={}
-io.on("connection", (socket) => {
-
-  console.log(`New client connected ${socket.id}`);
   
-  socket.on("disconnect", (socket) => {
-    console.log(socket.id);
-    console.log(`Client disconnected${socket}`);
+//   socket.on("disconnect", (socket) => {
+//   //   socket.on('my message', (msg) => {
+//   //     io.emit('my broadcast', `server: ${msg}`);
+//   //   });
+//     console.log(`Client disconnected${socket}`);
    
-  });
-});
+//   });
+// });
 
-const getApiAndEmit = socket => {
+// const getApiAndEmit = socket => {
  
-  socket.emit("chezki", response);
-};
+//   socket.emit("message", 'משתמש חדש נכנס לאתר');
+// };
 
 
 app.use('/users',userRouter)
-app.use('/admin',adminRouter)
+app.use('/admin',checkIfAdminAndAuth ,adminRouter)
 
 
 

@@ -6,7 +6,10 @@ import App from './App';
 
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
-
+import "../src/components/home/axiosInterceptors"
+import axios from 'axios';
+const token = JSON.parse(localStorage.getItem("loginToken"))
+if (token)  axios.defaults.headers.common['Authorization']  = `Bearer ${token['token']}`
 
 ReactDOM.render(
   <React.StrictMode>

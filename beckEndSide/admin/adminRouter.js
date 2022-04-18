@@ -1,16 +1,13 @@
-import { json, Router } from "express";
+import {  Router } from "express";
 import { User } from "../db/usersdb.js";
 import { Comment } from "../db/commentOnMapDb.js";
-import { compare, hash, tokenId, verifyToken } from "../aute.js";
-import { sendEmail } from "../users/sendMail.js"
-import crypto from "crypto"
+import { compare, hash } from "../aute.js";
+import { validation } from "../db/validationDb.js";
 import multer from 'multer'
-import { createRequire } from "module";
 import fs from "fs"
 import { Donation } from "../db/donationDb.js";
 
-const require = createRequire(import.meta.url);
-const mapElection = require("../mapGeoJson/tableGeojson.json")
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -27,30 +24,22 @@ const adminRouter = Router();
 
 
 
-async function checkIfAdmin(req, res, next) {
 
-  try {
-    const findUser = await User.findOne({ _id: req.user.id })
-    if (findUser.permissions === 'admin') {
-      return next()
-    }
-    return res.status(403).send('אין לך הרשאה לפעולה זאת')
-
-  } catch (error) {
-    console.log(error);
-    res.send(error)
-  }
-
-}
-
-
-
-adminRouter.put('/editUserByAdmin', verifyToken, checkIfAdmin, upload.single('avatar'), async (req, res) => {
+adminRouter.put('/editUserByAdmin',  upload.single('avatar'), async (req, res) => {
   try {
     const { name, email, password } = req.body
-    if (email) {
-      const findUser = await User.findOne({ email: email })
+    const payload = {
+      name: name,
+      email: email,
+      pass: password,
     }
+    const { error } = validation.validate(payload);
+    if (error) {
+      res.status(406);
+      return res.json({ msg: error.message });
+    }
+     const findUser = await User.findOne({ email: email })
+    if(!findUser) return res.status(404).send("לא נמצא משתמש זה במערכת")
     if (name) findUser.name = name
     if (password) {
       const hashPassword = await hash(password)
@@ -68,7 +57,7 @@ adminRouter.put('/editUserByAdmin', verifyToken, checkIfAdmin, upload.single('av
 });
 
 
-adminRouter.get("/getAllUsers", verifyToken, checkIfAdmin, async (req, res) => {
+adminRouter.get("/getAllUsers", async (req, res) => {
   try {
     const allUsers = await User.find({})
     res.status(200).json({ users: allUsers })
@@ -79,13 +68,14 @@ adminRouter.get("/getAllUsers", verifyToken, checkIfAdmin, async (req, res) => {
 
 })
 
-adminRouter.delete("/deleteAccountByAdmin/:user", verifyToken, checkIfAdmin, (req, res) => {
+
+adminRouter.delete("/deleteAccountByAdmin/:user", (req, res) => {
+
   try {
     if (!req.params.user) {
       return res.send("you must set comment as parameter")
     }
     User.deleteOne({ email: req.params.user }, function (err, result) {
-
       if (err) {
         return res.send(err);
       } else {
@@ -99,7 +89,7 @@ adminRouter.delete("/deleteAccountByAdmin/:user", verifyToken, checkIfAdmin, (re
   }
 })
 
-adminRouter.get("/checkDonationAmount/:userName/:postOrDonate", verifyToken, checkIfAdmin, async (req, res) => {
+adminRouter.get("/checkDonationAmount/:userName/:postOrDonate", async (req, res) => {
   try {
     if (req.params.userName) {
       const userName = await User.findOne({ email: req.params.userName })
@@ -129,7 +119,7 @@ adminRouter.get("/checkDonationAmount/:userName/:postOrDonate", verifyToken, che
 
 })
 
-adminRouter.delete("/postDelete/:comment", verifyToken, checkIfAdmin, async (req, res) => {
+adminRouter.delete("/postDelete/:comment", async (req, res) => {
   try {
     if (!req.params.comment) { return res.send("you must set comment as parameter") }
     const postByUser = await Comment.findOne({ comment: req.params.comment })
@@ -142,12 +132,12 @@ adminRouter.delete("/postDelete/:comment", verifyToken, checkIfAdmin, async (req
       findUser.sumOfComments = sum;
       await findUser.save()
 
-      return res.status(200).send(sum);
+      return res.status(200).send({sum});
     }
 
-
+     return
   } catch (error) {
-    return res.sendStatus(403) 
+  console.log(error.message);
 
   }
 })

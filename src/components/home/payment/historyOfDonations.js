@@ -1,4 +1,4 @@
-import { Form, FormControl,Button, Alert,Table } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 
 
 export default function HistoryOfDonations({donations}){
@@ -9,7 +9,7 @@ export default function HistoryOfDonations({donations}){
       <thead><tr><th>*</th><th>סכום</th><th>תאריך</th></tr></thead><tbody>{donations.dateDonations.map((item,i)=>{
         return(
            <tr key={i}>
-           <td></td>
+           <td>*</td>
            <td>{item.donationAmount}$</td>
            <td>{item.donationDate}</td>
            </tr>

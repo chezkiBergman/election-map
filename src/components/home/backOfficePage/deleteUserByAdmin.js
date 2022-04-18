@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios"
-// import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import Login from "../usersLogin/login/login";
-import {NavDropdown } from "react-bootstrap";
 import Alert from '@mui/material/Alert';
 import { useHistory } from "react-router-dom";
+const token = JSON.parse(localStorage.getItem("loginToken"))
 
 
 
@@ -16,10 +14,9 @@ export default function DeleteAccountByAdmin({userName}) {
 
   console.log(user);
     const [deleted, setDeleted] = useState(false)
-    const token = JSON.parse(localStorage.getItem("loginToken"))
-   
-        axios.delete(`http://localhost:3003/admin/deleteAccountByAdmin/${user}`,
-        { headers: { "Authorization": `Bearer ${token['token']}` } })
+       token &&
+        axios.delete(`admin/deleteAccountByAdmin/${user}`,
+      )
         .then(res => {
             console.log(res.data);
             setDeleted(res.data.msg)

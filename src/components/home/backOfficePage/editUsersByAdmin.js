@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import { Form, Button, Container, FormControl, FormGroup } from "react-bootstrap";
 import Alert from "@mui/material/Alert";
-import { Link, useHistory } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import axios from "axios";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai"
 
@@ -18,6 +18,8 @@ export default function EditUsersByAdmin() {
     const [editUserComplete,setEditUserComplete] = useState(false)
     const [msg, setMsg] = useState("")
     const token = JSON.parse(localStorage.getItem("loginToken"))
+    const imageInputRef = useRef();
+
 
     function validateEmail(value) {
 
@@ -42,7 +44,12 @@ export default function EditUsersByAdmin() {
       };
     
     
-    
+    const deselect = () => {
+    console.log(imageInputRef.current.value);
+    imageInputRef.current.value = "";
+    setSelectedImage("")
+
+  }
       function onChangeAndValidPassword(e) {
         const errors = validatePassword(e.target.value)
         setPasswordErr(errors)
@@ -55,11 +62,11 @@ export default function EditUsersByAdmin() {
         setEmail(e.target.value)
       }
     
-    useEffect(() => {
-        if (!token) {
-            history.push("/login")
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (!token) {
+    //         history.push("/login")
+    //     }
+    // }, [])
     const handleOnSubmit = (e) => {
 
         const formData = new FormData();
@@ -81,21 +88,20 @@ export default function EditUsersByAdmin() {
            
             return
         }
-        axios.put(`http://localhost:3003/admin/editUserByAdmin`, formData,
-            { headers: { "Authorization": `Bearer ${token['token']}` } })
+        token &&
+        axios.put(`admin/editUserByAdmin`, formData,
+        )
             .then(res => {
                 console.log(res);
                 console.log(res.data);
                setEditUserComplete(true) 
-               setMsg("החשבון עודכן בהצלחה")
-                setTimeout(() => {
-                    return history.push("/login")
-                }, 3000);
+               setMsg("חשבונו של המשתמש עודכן בהצלחה")
+              setTimeout(() => {
+               return <Redirect to={'/backOffice'}/>
+              }, 2000);
 
             }).catch(function (error) {
-                if ( error.response.data === 'jwt expired') {
-                    localStorage.removeItem("loginToken")        
-                }
+               console.log(error);
             })
         e.preventDefault()
         setEmail('')
@@ -116,7 +122,7 @@ export default function EditUsersByAdmin() {
                     <Container className='container'>
                          
                         <h1 className='h1' style={{ margin: '15px', position: "absolute", left: "42%", color: "wheat" }}>ערוך פרופיל</h1>
-                        <Form onSubmit={handleOnSubmit} enctype="multipart/form-data" style={{ top: '65%' }}  >
+                        <Form onSubmit={handleOnSubmit} encType="multipart/form-data" style={{ top: '65%' }}  >
                             {selectedImage ? (
                                 <div style={{ textAlign: 'center', display: "flex", justifyContent: "space-between" }}>
                                     <img
@@ -124,7 +130,7 @@ export default function EditUsersByAdmin() {
                                         style={{ width: '80px', borderRadius: '30px' }}
                                         alt="Thumb"
                                     />
-                                    <button className="btn btn-outline-primary" onClick={() => (setSelectedImage())} style={{ margin: '5px', color: "wheat", fontWeight: "bold" }}>
+                                    <button className="btn btn-outline-primary"   onClick={deselect} style={{ margin: '5px', color: "wheat", fontWeight: "bold" }}>
                                         בטל את הבחירה
                                     </button>
                                 </div>
@@ -152,7 +158,7 @@ export default function EditUsersByAdmin() {
                             <Form.Group className="mb-3" controlId="formBasicPassword">
                                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>סיסמה</Form.Label>
                                 {passwordErr.password && <Alert  variant="filled" severity="warning">{passwordErr.password}</Alert>}
-                                <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={e => onChangeAndValidPassword(e)}  />
+                                <Form.Control required={true} type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={e => onChangeAndValidPassword(e)}  />
                                 {!showPassword ? 
                                      <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> :
                                      <AiFillEye style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}

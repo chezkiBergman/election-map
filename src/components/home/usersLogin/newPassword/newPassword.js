@@ -33,7 +33,7 @@ function NewPass() {
             setPass("")
             return
         }else{
-            axios.post(`http://localhost:3003/users/newPassword `, { password, token })
+            axios.post(`users/newPassword `, { password, token })
 
                 .then(res => {
                     console.log(res.data);
@@ -90,13 +90,13 @@ function NewPass() {
                             <Form.Group className="mb-3" controlId="formBasicPassword">
                                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>סיסמה</Form.Label>
                                 {passwordErr.password && <Alert variant="danger">{passwordErr.password}</Alert>}
-                                <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={e => { onChangeAndValidPassword(e) }} />
+                                <Form.Control required={true} type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={e => { onChangeAndValidPassword(e) }} />
                                 {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "185px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "185px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
                                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}> אישור סיסמה</Form.Label>
                                 {passNotEqual ? <Alert style={{ height: "20px", display: "flex", alignItems: "center" }} variant="danger">סיסמה לא תואמת</Alert> : null}
-                                <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" value={pass} onChange={e => { passComparison(e) }} />
+                                <Form.Control required={true} type={showPassword ? "text" : "password"} placeholder="Password" value={pass} onChange={e => { passComparison(e) }} />
                                 {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "185px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "185px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
                             </Form.Group>
                             <Button style={{ margin: '2px' }} variant="primary" type="submit" >

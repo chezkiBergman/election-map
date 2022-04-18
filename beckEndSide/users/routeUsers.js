@@ -1,4 +1,4 @@
-import { json, Router } from "express";
+import { Router } from "express";
 import { User } from "../db/usersdb.js";
 import { Comment } from "../db/commentOnMapDb.js";
 import { compare, hash, tokenId, verifyToken } from "../aute.js";
@@ -9,6 +9,12 @@ import { createRequire } from "module";
 import fs from "fs"
 import jwt from "jsonwebtoken"
 import { Donation } from "../db/donationDb.js";
+import { validation } from "../db/validationDb.js"
+
+
+
+
+
 
 const require = createRequire(import.meta.url);
 const mapElection = require("../mapGeoJson/tableGeojson.json")
@@ -31,29 +37,19 @@ const upload = multer({ storage: storage })
 const userRouter = Router();
 
 
-userRouter.get('/createNewToken',  async (req, res) => {
-  try {
-   
-    const { authorization } = req.headers;
-    const token = authorization.split(' ')[1];
-   console.log(token);
-    if(!token) return res.sendStatus(401);
-    const jt =  jwt.verify(token, process.env.JWT_PASS);
-    const accessToken = jwt.sign({id:jt.id}, process.env.JWT_PASS, { expiresIn:  "20m" });
-    return res.json({accessToken})
-   
-  } catch (err) {
-    if( err.message === 'jwt expired' ){
+userRouter.get('/createNewToken', async (req, res) => {
+
+  const { authorization } = req.headers;
+  const token = authorization?.split(' ')[1];
+  if (!token) return res.sendStatus(401);
       const refreshToken = req.cookies.refreshToken;
-      if(!refreshToken) return res.sendStatus(401);
-      const  checkRefresh= jwt.verify(refreshToken, process.env.JWT_PASS)
-      if(!checkRefresh)return res.sendStatus(403,"refreshToken expire");
-    const accessToken = jwt.sign({id:checkRefresh.id}, process.env.JWT_PASS, { expiresIn:"20m" });
-    console.log(accessToken);
-     return res.json({ accessToken });
-    }
-    res.json({msg:err.message})
-  }
+      if (!refreshToken) return res.status(401).send('refreshToken not valid');
+      const checkRefresh = jwt.verify(refreshToken, process.env.JWT_PASS)
+      if (!checkRefresh) return res.status(403).send("refreshToken expire");
+      const accessToken = jwt.sign({ id: checkRefresh.id}, process.env.JWT_PASS, { expiresIn: "1m" });
+     console.log(accessToken);
+      return res.json({ accessToken })
+    
 })
 
 
@@ -93,10 +89,20 @@ userRouter.get('/getMapElectionGeoJson', verifyToken, (req, res) => {
 userRouter.post("/singUp", upload.single('avatar'), async (req, res) => {
   try {
     const emailExists = await User.findOne({ email: req.body.email })
-    if (emailExists) return res.status(400).send("Email already exists")
-
+    if (emailExists) return res.status(400).send({msg:"Email already exists"})
     const { name, email, password } = req.body
     if (name && email && password) {
+      const payload = {
+        name: name,
+        email: email,
+        pass: password,
+      }
+      const { error } = validation.validate(payload);
+      if (error) {
+        res.status(406);
+        return res.json({ msg: error.message });
+      }
+
       const token = crypto.randomBytes(32).toString('hex');
       console.log(req.file);
 
@@ -121,7 +127,7 @@ userRouter.post("/singUp", upload.single('avatar'), async (req, res) => {
         return res.json({ user: user.toJSON(), msg: "אתה נדרש להפעיל את החשבון דרך תיבת" });
       }).catch(function (error) {
         console.log(error)
-        res.send(error)   
+        res.send(error)
       })
     } else {
       return res.status(401).json({ msg: 'require email, password and name' })
@@ -136,6 +142,72 @@ userRouter.post("/singUp", upload.single('avatar'), async (req, res) => {
 
 
 
+userRouter.put("/editUser", verifyToken, upload.single('avatar'), async (req, res) => {
+  const findUser = await User.findOne({ _id: req.user.id })
+
+  const { name, email, password } = req.body
+  if (name) findUser.name = name
+  if (email) {
+    const emailExists = await User.findOne({ email: req.body.email })
+    if (emailExists?.id !== req.user.id) return res.status(400).send("אימייל זה כבר נמצא בשימוש")
+    findUser.email = email
+  }
+  if (password) {
+    const passExists = await User.findOne({ pass: req.body.password })
+    if (!passExists?.id == req.user.id) return res.status(400).send("סיסמה זאת כבר נמצאת בשימוש")
+    const hashPassword = await hash(password)
+    findUser.pass = hashPassword
+  }
+  const payload = {
+    name: name,
+    email: email,
+    pass: password,
+  }
+  const { error } = validation.validate(payload);
+  if (error) {
+    res.status(406);
+    return res.json({ msg: error.message });
+  }
+  findUser.image = req.file.filename,
+    console.log(req.file);
+
+  await findUser.save()
+  findUser.pass = '****'
+  res.json({ user: findUser.toJSON(), msg: "saved" });
+});
+
+
+
+
+userRouter.post("/singIn", async (req, res) => {
+  try {
+    const findUser = await User.findOne({ email: req.body.email })
+    if (!findUser) {
+      return res.status(401).json({ msg: 'אימייל לא נמצא' })
+    }
+    const checkPass = await compare(req.body.password, findUser.pass)
+    if (!checkPass) {
+      return res.status(401).json({ msg: 'הסיסמה לא קיימת במערכת' })
+    }
+    let newToken = tokenId(findUser.id)
+    if (findUser.activateUserByMail != 'Active') {
+      return res.status(401).json({ msg: "אתה נדרש להיכנס אל תיבת האימייל שלך ולהפעיל את החשבון" })
+    }
+    findUser.isUserOnline = true;
+    await findUser.save()
+    res.status(200).cookie('refreshToken', newToken.refreshToken, {
+      httpOnly: true,
+     maxAge:  4 * 60 * 60 * 1000
+
+    }).json({ token: newToken.token, findUser: findUser })
+
+
+
+
+  } catch (error) {
+    console.error(error);
+  }
+});
 
 
 userRouter.post("/setActivateUser", async (req, res) => {
@@ -161,75 +233,29 @@ userRouter.post("/setActivateUser", async (req, res) => {
 })
 
 
-
-
-userRouter.put("/editUser", verifyToken, upload.single('avatar'), async (req, res) => {
-  const findUser = await User.findOne({ _id: req.user.id })
- 
-  const { name, email, password } = req.body
-  if (name) findUser.name = name
-  if (email){
-  const emailExists = await User.findOne({ email: req.body.email })
-  if (emailExists?.id !== req.user.id ) return res.status(400).send("אימייל זה כבר נמצא בשימוש")
-  findUser.email = email
-  }
-  
-  if (password) {
-    const passExists = await User.findOne({ pass: req.body.password })
-    if (!passExists?.id== req.user.id ) return res.status(400).send("סיסמה זאת כבר נמצאת בשימוש")
-    const hashPassword = await hash(password)
-    findUser.pass = hashPassword
-  }
-  findUser.image = req.file.filename,
-    console.log(req.file);
-
-  await findUser.save()
-  findUser.pass = '****'
-  res.json({ user: findUser.toJSON(), msg: "saved" });
-});
-
-
-
-
-userRouter.post("/singIn", async (req, res) => {
+userRouter.get("/logout", verifyToken, async (req, res) => {
   try {
-    const findUser = await User.findOne({ email: req.body.email })
-    if (!findUser) {
-      return res.status(401).json({ msg: 'אימייל לא נמצא' })
-    }
-    const checkPass = await compare(req.body.password, findUser.pass)
-    if (!checkPass) {
-      return res.status(401).json({ msg: 'הסיסמה לא קיימת במערכת' }) 
-    }
-    let newToken = tokenId(findUser.id)
-    if (findUser.activateUserByMail != 'Active') {
-      return res.status(401).json({ msg: "אתה נדרש להיכנס אל תיבת האימייל שלך ולהפעיל את החשבון" })
-    }
-    res.status(200).cookie('refreshToken',newToken.refreshToken, {  httpOnly: true,
-      expires: new Date(Date.now() + 900000),
-    
-    }).json({ token: newToken.token, findUser: findUser })
-   
-   
-   
-    
-  } catch (error) {
-    console.error(error);
+    const findUser = await User.findOne({ _id: req.user.id })
+    !findUser && res.status(404).send({ msg: "משתמש לא נמצא במערכת" })
+    findUser.isUserOnline = false;
+    await findUser.save()
+    res.clearCookie('refreshToken').status(200).send({ msg: "להתראות בפעם הבאה" })
+  } catch (err) {
+    console.log(err);
   }
-});
-
+})
 
 
 
 userRouter.delete("/deleteAccount", verifyToken, (req, res) => {
   try {
-  
-    User.deleteOne({_id:req.user.id}, function(err, result) {
+
+    User.deleteOne({ _id: req.user.id }, function (err, result) {
 
       if (err) {
         return res.send(err);
       } else {
-      return  res.status(200).send({result,msg:"החשבון נמחק"});
+        return res.status(200).send({ result, msg: "החשבון נמחק" });
       }
     });
 
@@ -247,7 +273,7 @@ userRouter.get("/getPostComment/:city", verifyToken, async (req, res) => {
 
     const getUser = await User.find({ _id: getPost.map(userId => { return userId.user }) })
     if (!getPost) return res.status(404).send('not found post by this user')
-  
+
     return res.send({ comments: getPost, user: getUser });
   } catch (error) {
     res.send(error, 'Failed, please try again')
@@ -348,7 +374,9 @@ userRouter.post("/donationAmount", verifyToken, async (req, res) => {
   try {
 
     var today = new Date()
-    let formatDate = "יום: " + parseInt(today.getDay() + 1) + "-" + today.getDate() + '-' + parseInt(today.getMonth() + 1) + '-' + today.getFullYear()
+
+    today.toDateString();
+    // let formatDate = "יום: " + parseInt(today.getDay() + 1) + "-" + today.getDate() + '-' + parseInt(today.getMonth() + 1) + '-' + today.getFullYear()
     const findUser = await Donation.find({ user: req.user.id })
     let sum = 0;
     for (let i = 0; i < findUser.length; i++) {
@@ -366,7 +394,7 @@ userRouter.post("/donationAmount", verifyToken, async (req, res) => {
       const newdDnation = new Donation({
         user: req.user.id,
         donationAmount: pay,
-        date: formatDate,
+        date: today.toDateString(),
         sumDonationHistory: donationHistory
 
       })
@@ -389,25 +417,25 @@ userRouter.post("/donationAmount", verifyToken, async (req, res) => {
 
 userRouter.get("/checkDonationAmount/:postOrDonate", verifyToken, async (req, res) => {
   try {
-  
-      const userName = await User.findOne({ _id: req.user.id })
-      if (!userName) return res.status(404).send("לא נמצא משתמש זה במערכת")
 
-      if (req.params.postOrDonate === 'comments') {
-        const postByUser = await Comment.find({ user: userName.id })
-        if (!postByUser.length) {
-          return res.status(200).send({ msg: "משתמש זה עדיין לא הגיב" })
-        }
-        return res.status(200).json({ postByUser: postByUser })
+    const userName = await User.findOne({ _id: req.user.id })
+    if (!userName) return res.status(404).send("לא נמצא משתמש זה במערכת")
 
-      } if (req.params.postOrDonate === 'donations') {
-        const findUser = await Donation.find({ user: userName.id })
-        if (!findUser.length) {
-          return res.status(200).send({ msg: "0.00" })
-        }
-        return res.status(200).json({ findUser: findUser })
+    if (req.params.postOrDonate === 'comments') {
+      const postByUser = await Comment.find({ user: userName.id })
+      if (!postByUser.length) {
+        return res.status(200).send({ msg: "משתמש זה עדיין לא הגיב" })
       }
-    
+      return res.status(200).json({ postByUser: postByUser })
+
+    } if (req.params.postOrDonate === 'donations') {
+      const findUser = await Donation.find({ user: userName.id })
+      if (!findUser.length) {
+        return res.status(200).send({ msg: "0.00" })
+      }
+      return res.status(200).json({ findUser: findUser })
+    }
+
   } catch (err) {
     console.log(err);
     return res.send({ msg: err.message })

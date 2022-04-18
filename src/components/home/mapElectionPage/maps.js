@@ -1,15 +1,14 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import MandatByParties from "./mandatByParties";
-import { GoogleMap, InfoBox, InfoWindow, Marker, OverlayView, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import Search from "./Search"
 import TableElection from "../tableElection/tableElectionResult";
 import Comment from "../comment/commentOnResult";
 import CommentOrMap from "../comment/CommentOrMap";
-// import * as geojson from './tableGeojson.json'
 import axios from "axios";
-import { useHistory, useLocation,} from "react-router-dom"
-// import Login from "../login/login"
+import { useHistory, useLocation, } from "react-router-dom"
+const token = JSON.parse(localStorage.getItem("loginToken"))
 
 function Maps() {
     const location = useLocation()
@@ -20,15 +19,16 @@ function Maps() {
 
     })
     const mapRef = useRef(null);
-    const [logOut, setLogOut] = useState(false)
     const [showDiv, setShowDiv] = useState(false)
     const [clickedComment, setClickedComment] = useState(false)
     const [clickedMap, setClickedMap] = useState(false)
     const [zoom, setZoom] = useState(10)
     const [activeMarker, setActiveMarker] = useState(null);
     const [posts, setPosts] = useState(null)
-     const [url, setUrl] = useState("")
-     const token = JSON.parse(localStorage.getItem("loginToken"))
+
+
+
+
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: "AIzaSyCUrY424hTes0fcYES8JRw3eAde8yhcYkk" // ,
@@ -53,37 +53,38 @@ function Maps() {
 
     }
 
-    
-        
-
-    useEffect(()=>{
-      
-        function getResults() {
-            let newToken = JSON.parse(localStorage.getItem("loginToken"))
-            
-         console.log(newToken);
-        newToken ? (
-               axios.get(`http://localhost:3003/users/getMapElectionGeoJson`, { headers: { "Authorization": `Bearer ${newToken['token']}` } }).then(res => {
-                    setPosts(res.data.features)
-                    console.log(res);
-                   
-                }).catch(function (error) {
-                 
-                    console.log(error);
-                })
-            ) : history.push("login")
-        }
-
-        getResults()
-        coalitionOrOpposition()
-
-       console.log(posts);
-    }, [])
 
    
       
+    function getResults() {
+      console.log(token);
+        token &&
+            axios.get(`users/getMapElectionGeoJson`,
+                ).then(res => {
+                    setPosts(res.data.features)
+                    console.log(res);
+
+                }).catch(  function (error) {
+                
+                    console.log(error.response);
+
+                })
+    }
+
+
+
+    useEffect(() => {
+      
+        getResults()
+        coalitionOrOpposition()
+     
+    }, [])
+
+
+
+
     const handleActiveMarker = (marker) => {
-        console.log(posts);
+      
         posts?.forEach(city => {
             const sumCoalition = [city['properties']["yamina"], city['properties']["New Hope"], city['properties']["meretz"], city['properties']["labor party"], city['properties']["Blue and White"], city['properties']["Yisrael beiteinu"], city['properties']["United Arab List"], city['properties']["yesh atid"]]
             const sumOpposition = [city['properties']["likud"], city['properties']["Shas"], city['properties']["Religious Zionist Party"], city['properties']["joint list"], city['properties']["United Torah"]]
@@ -100,74 +101,72 @@ function Maps() {
 
     };
 
- 
+
 
     function handleZoomChanged(newZoom) {
         setZoom(newZoom);
     }
 
     const handleOnLoad = (map) => {
-       
+
         mapRef.current = map;
+        console.log(mapRef.current.center);
         const newPos = mapRef.current.getCenter().toJSON();
         setCenter(newPos)
-        // Store a reference to the google map instance in state
-        // setMapRef(map);
-        // console.log(mapRef);
-        // Fit map bounds to contain all markers
+
         const bounds = new window.google.maps.LatLngBounds();
         posts && posts.map(city => {
             bounds.extend({ lat: city.geometry.coordinates[1], lng: city.geometry.coordinates[0] })
         })
-       
+
         map.fitBounds(bounds);
-      
+
 
     };
     const clickedMaping = () => {
         setClickedMap(false)
-        //   setShowDiv(true)
-        //   
+    
     }
     const clickedOnComment = () => {
         setClickedComment(false)
     }
-    const mapCenter=()=>{
-       console.log(mapRef?.current.center); 
-    
+    const mapCenter = () => {
+        console.log(mapRef?.current.center);
+
         if (!mapRef.current) return;
         const newPos = mapRef.current.getCenter().toJSON();
         console.log(newPos);
         setCenter(newPos);
-    
-    
+
+
     }
 
     const renderMap = () => {
         return (
             <>
+
                 <GoogleMap
                     onCenterChanged={() => mapCenter}
-                    onZoomChanged={()=>handleZoomChanged(zoom)}
+                    onZoomChanged={() => handleZoomChanged(zoom)}
                     center={{ lat: center.lat, lng: center.lng }}
                     zoom={zoom}
                     onLoad={handleOnLoad}
                     mapContainerStyle={{ height: "100vh" }}>
 
-                    <MandatByParties/>
+                    <MandatByParties />
 
                     <Search onSearch={handleOnSubmit} />
 
-                    
-                  
-                    {posts && posts.length ? (posts.map((city, i) => ( 
-                        
+
+
+                    {posts && posts.length ? (posts.map((city, i) => (
+
                         <Marker
                             key={i}
                             position={{ lat: city.geometry.coordinates[1], lng: city.geometry.coordinates[0] }}
                             onClick={() => handleActiveMarker(city)}
                             icon={{
-                                url:  "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+                                url: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
                                 size: new window.google.maps.Size(20, 32),
                                 anchor: new window.google.maps.Point(0, 32),
                                 scaledSize: new window.google.maps.Size(15, 15)
@@ -180,19 +179,19 @@ function Maps() {
                     {activeMarker ? !clickedMap && !clickedComment && (
 
                         <div style={{ width: "400px", margin: "auto", marginTop: '20px' }}   >
-                            {showDiv ? (<CommentOrMap  activeMarker={activeMarker} setShowDiv={() => setShowDiv(false)} setClickedMap={() =>setClickedMap(true)} setClickedComment={() => setClickedComment(true)} />) : null}
+                            {showDiv ? (<CommentOrMap activeMarker={activeMarker} setShowDiv={() => setShowDiv(false)} setClickedMap={() => setClickedMap(true)} setClickedComment={() => setClickedComment(true)} />) : null}
                         </div>
                     ) : null}
-                    {clickedMap ? (<TableElection  activeMarker={activeMarker} onCloseClick={clickedMaping} />) :null  }
+                    {clickedMap ? (<TableElection activeMarker={activeMarker} closeClick={clickedMaping} />) : null}
 
                     {
-                        clickedComment ? !clickedMap && (<Comment city={activeMarker.properties.City} lat={activeMarker.geometry.coordinates[1]} lng={activeMarker.geometry.coordinates[0]} onCloseClick={clickedOnComment} />) : null
+                        clickedComment ? !clickedMap && (<Comment city={activeMarker.properties.City} lat={activeMarker.geometry.coordinates[1]} lng={activeMarker.geometry.coordinates[0]} closeClick={clickedOnComment} />) : null
                     }
-                
+
 
                 </GoogleMap>
-               
-  
+
+
             </>
         );
     }

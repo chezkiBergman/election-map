@@ -11,7 +11,7 @@ function ActivateNewUser() {
   useEffect(() => {
     function setActivate() {
 
-      axios.post(`http://localhost:3003/users/setActivateUser`, { token }
+      axios.post(`users/setActivateUser`, { token }
       ).then(res => {
         setIsTokenActivateExpired(res.data.msg)
       }).catch(function (error) {

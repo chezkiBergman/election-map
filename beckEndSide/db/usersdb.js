@@ -34,6 +34,13 @@ import mongoose from 'mongoose'
         option: ['Pending', 'Active'],
         default: 'Pending'
     },
+    
+      isUserOnline:{
+         type: Boolean,
+        option:[true,false],
+        default:false
+      },
+    
   
     permissions:{
       type: String,
@@ -42,7 +49,8 @@ import mongoose from 'mongoose'
     },
     sumDonationHistory:{
       type: Number,
-      ref: 'Donation'
+      ref: 'Donation',
+      default: 0
     },
     sumOfComments:{
       type:Number,

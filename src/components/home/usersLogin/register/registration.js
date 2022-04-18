@@ -1,11 +1,12 @@
 
-import { useState, useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Form, Button, Container, FormControl, FormGroup } from "react-bootstrap";
 import Alert from "@mui/material/Alert";
-import { Redirect, useHistory,Link } from "react-router-dom";
+import { Redirect, useHistory, Link } from "react-router-dom";
 import styles from './registertion.css';
 import axios from "axios";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai"
+import { Login } from "@mui/icons-material";
 
 
 
@@ -17,14 +18,13 @@ function Registration() {
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState('')
   const [selectedImage, setSelectedImage] = useState("")
-  const [emailExsit, setEmailExsit] = useState(false)
-  const [registrationComplete, setRegistrationComplete] = useState("")
+  const [registrationComplete, setRegistrationComplete] = useState(false)
   const [loginAlready, setLoginAlready] = useState(false)
   const [emailErr, setEmailErr] = useState({});
   const [passwordErr, setPasswordErr] = useState({})
   const [error, setError] = useState("")
-  
-   const imageInputRef = useRef();
+
+  const imageInputRef = useRef();
 
 
 
@@ -96,7 +96,7 @@ function Registration() {
       setPassword("")
       setName("")
       setSelectedImage("")
-     
+
       return
 
     } else {
@@ -105,20 +105,20 @@ function Registration() {
         axios.post(`http://localhost:3003/users/singUp`, formData)
           .then(res => {
             console.log(res.data);
-
-            setRegistrationComplete(res.data)
-
+             if(res.data?.msg === "אתה נדרש להפעיל את החשבון דרך תיבת") {return setRegistrationComplete(res.data)}
+             else{setError(res.data?.msg)}
+           
+                 
           }).catch(function (error) {
-            if (error.response) {
-              setError(error.response.data.msg)
+            if (error) {
+              setError(error.response.data?.msg)
               console.log(error.response.data);
               console.log(error.response.status);
               console.log(error.response.headers);
-
+              return
             }
 
-            setEmailExsit(true)
-
+           
             console.log(error);
           })
 
@@ -130,29 +130,40 @@ function Registration() {
   }
   const onFocus = () => {
     setError("")
-    setEmailExsit(false)
+    setLoginAlready(false)
 
   }
-  const deselect=()=>{
-    console.log(imageInputRef.current.value );
+  const deselect = () => {
+    console.log(imageInputRef.current.value);
     imageInputRef.current.value = "";
     setSelectedImage("")
-    
+
   }
 
   return (
 
     <Container className={styles.container}>
       {
-        !registrationComplete ? (
+        registrationComplete ?(
+          <Container style={{ position: "absolute", top: "20%" }}>
+          <Alert style={{ margin: "auto", textDecoration: "none", textAlign: "center", }}>{registrationComplete['msg']}<Link style={{ textDecoration: "none", padding: "7px" }}
+            to='#'
+            target="_blank"
+            onClick={(e) => {
+              window.location = `https://mail.google.com/`
+              e.preventDefault();
+            }}
+          >
+            האימייל
+          </Link></Alert></Container>  ) :
 
           <Container className='container'>
-
+          
             <h1 className='h1'
-             style={{ margin: '15px', position: "absolute", left: "42%", color: "wheat" }}>הרשמה</h1>
+              style={{ margin: '15px', position: "absolute", left: "42%", color: "wheat" }}>הרשמה</h1>
 
-            <Form onSubmit={handleOnSubmit} enctype="multipart/form-data"
-             style={{ top: '65%' }} className={styles.form}>
+            <Form onSubmit={handleOnSubmit} encType="multipart/form-data"
+              style={{ top: '65%' }} className={styles.form}>
               {selectedImage ? (
                 <div style={{ textAlign: 'center', display: "flex", justifyContent: "space-between" }}>
                   <img
@@ -161,23 +172,23 @@ function Registration() {
                     style={{ width: '70px', borderRadius: '30px' }}
                     alt="Thumb"
                   />
-                  <Button onClick={deselect} 
-                  style={{ margin: '5px', color: "wheat", fontWeight: "bold", left: "150px", top: "50px" }}>
+                  <Button onClick={deselect}
+                    style={{ margin: '5px', color: "wheat", fontWeight: "bold", left: "150px", top: "50px" }}>
                     בטל את הבחירה
                   </Button>
                 </div>
               ) : null}
               <FormGroup className="mb-3" controlId="formBasicImage">
                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>בחר תמונת פרופיל</Form.Label>
-                <FormControl required="true" ref={imageInputRef} type='file' name='avatar' placeholder="upload your poto" defultvalue={selectedImage}
-               onFocus={() => onFocus()} onChange={e => handleChange(e)} />
+                <FormControl required={true} ref={imageInputRef} type='file' name='avatar' placeholder="upload your poto" defultvalue={selectedImage}
+                  onFocus={() => onFocus()} onChange={e => handleChange(e)} />
               </FormGroup>
 
 
               <Form.Group className="mb-3" controlId="formBasicName">
                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }} >שם פרטי ומשפחה</Form.Label>
-                <Form.Control required="true" type="name" placeholder="Enter name" onFocus={() => onFocus()}
-                 value={name} onChange={e => { setName(e.target.value) }} />
+                <Form.Control required={true} type="name" placeholder="Enter name" onFocus={() => onFocus()}
+                  value={name} onChange={e => { setName(e.target.value) }} />
 
               </Form.Group>
 
@@ -185,53 +196,42 @@ function Registration() {
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>אימייל</Form.Label>
                 {emailErr.email && <Alert variant="filled" severity="warning">{emailErr.email}</Alert>}
-                <Form.Control required="true" type="email" placeholder="Enter email" onFocus={() => onFocus()}
-                 value={email} onChange={e => onChangeAndValidMail(e)} />
+                <Form.Control required={true} type="email" placeholder="Enter email" onFocus={() => onFocus()}
+                  value={email} onChange={e => onChangeAndValidMail(e)} />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>סיסמה</Form.Label>
-                {passwordErr.password && <Alert  variant="filled" severity="warning">{passwordErr.password}</Alert>}
-                <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" onFocus={() => onFocus()}
-                 value={password} onChange={e => onChangeAndValidPassword(e)} />
+                {passwordErr.password && <Alert variant="filled" severity="warning">{passwordErr.password}</Alert>}
+                <Form.Control required={true} type={showPassword ? "text" : "password"} placeholder="Password" onFocus={() => onFocus()}
+                  value={password} onChange={e => onChangeAndValidPassword(e)} />
 
                 {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "300px", top: "-33px" }}
-                 onClick={() => setShowPassword(!showPassword)} />
+                  onClick={() => setShowPassword(!showPassword)} />
                   : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "300px", top: "-33px" }}
-                   onClick={() => setShowPassword(!showPassword)} />}
+                    onClick={() => setShowPassword(!showPassword)} />}
               </Form.Group>
 
               <Button variant="primary" type="submit" >
-                שלח
+              <Login/>
+
               </Button>
+             
               {
-                emailExsit && (<Alert  variant="filled" severity="error" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-23%", width: "250px", textAlign: "center", }}
-                >אימייל זה נמצא בשימוש!</Alert>)
-              }
-              {
-                loginAlready ? (<Alert variant="filled" severity="error" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-17%", width: "250px", textAlign: "center", }}
+                loginAlready ? (<Alert variant="filled" severity="info" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "15%", top: "-17%", width: "250px", textAlign: "center", }}
                 >הינך מחובר כבר למערכת</Alert>)
                   : null
               }
 
             </Form>
             {
-              error ? (<Alert variant="danger" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "42%", top: "25%" }}>{error}</Alert>) : null
+              error ? (<Alert variant="filled" severity="error" style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "38%", top: "20%" }}>{error}</Alert>) : null
             }
 
           </Container>
 
-        ) : <Container style={{ position: "absolute", top: "20%" }}> <Alert style={{ margin: "auto", textDecoration: "none", textAlign: "center", }}>{registrationComplete['msg']}<Link style={{textDecoration:"none",padding:"7px"}}
-        to='#'
-        target="_blank" 
-        onClick={(e) => {
-            window.location =`https://mail.google.com/`
-            e.preventDefault();
-        }}
-    >
-        האימייל
-    </Link></Alert></Container>
-      
+
+
       }
 
 

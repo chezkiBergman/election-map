@@ -1,7 +1,7 @@
 
-import { Form, FormControl,Button, Alert,Table } from 'react-bootstrap'
+import { Form,Button, Alert } from 'react-bootstrap'
 import "./payment.css"
-import React, { useState,useEffect,useRef } from "react";
+import React, { useState,useEffect } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
@@ -27,7 +27,8 @@ export default function ReactPayPal() {
         history.push("/login")
       }else{
        
-      axios.get(`http://localhost:3003/users/checkDonationAmount/${postOrDonate}`, { headers: { "Authorization": `Bearer ${token['token']}` } })
+      axios.get(`users/checkDonationAmount/${postOrDonate}`, 
+      )
       .then(res => {
        
         let lastElement = res.data.findUser[res.data.findUser.length - 1];
@@ -43,7 +44,9 @@ export default function ReactPayPal() {
         
       }).catch(function (error) {
           if (error.response) {
-              console.log({ data: error.response.data, status: error.response.status, headers: error.response.headers });
+              console.log({ data: error.response.data,
+                 status: error.response.status, 
+                 headers: error.response.headers });
           }
       })
 
@@ -52,7 +55,7 @@ export default function ReactPayPal() {
           window.location.reload()
         }, 3000);
             setShow(!show)
-            axios.post(`http://localhost:3003/users/donationAmount`,{pay},{ headers: { "Authorization": `Bearer ${token['token']}`} } 
+            axios.post(`users/donationAmount`,{pay},
             )
             .then(res => {
               console.log(res.data);
@@ -135,13 +138,14 @@ export default function ReactPayPal() {
       }}
     >
        {ErrorMessage &&  <Alert style={{textAlign:"center"}}>{ErrorMessage}</Alert> }
-        {donations ?(<HistoryOfDonations donations={donations}/>)
-             : <Alert style={{textAlign:"center"}}>עדיין לא תרמת לאתר</Alert>}
+        {!donations ?(  <Alert style={{textAlign:"center"}}>עדיין לא תרמת לאתר</Alert> ): 
+                <HistoryOfDonations donations={donations}/>
+             }
         
             <div style={{position:"absolute",left:"42.2%",top:"20%"}}>
                <Form.Group className="mb-3" style={{textAlign:"center"}} controlId="formNumber">
               <Form.Label style={{ color: "wheat", fontWeight: "bold" ,fontSize:"35px" }}>סכום התרומה</Form.Label>
-           <Form.Control required="true" type="number" placeholder="בחר סכום" value={pay}  onChange={e  => changeMount(e)} />
+           <Form.Control required={true} type="number" placeholder="בחר סכום" value={pay}  onChange={e  => changeMount(e)} />
           </Form.Group>
              
               <Button style={{marginBottom:"15px"}} type="submit" onClick={() => setShow(true)}>

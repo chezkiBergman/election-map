@@ -7,12 +7,13 @@ import ResetPass from "../src/components/home/usersLogin/resetPassword/resetPass
 import NewPass from './components/home/usersLogin/newPassword/newPassword';
 import Header from './components/home/Header';
 import EditUser from './components/home/usersLogin/editUser/editUser';
-import { useEffect } from 'react';
-import Homepage from './components/home/homepage';
+import { useEffect, useState } from 'react';
+import Homepage from './components/home/homepage/homepage';
 import Maps from "./components/home/mapElectionPage/maps"
 import ActivateNewUser from './components/home/usersLogin/register/activateNewUser';
 import ReactPayPal from './components/home/payment/paymentPaypal';
 import WebsiteManagement from './components/home/backOfficePage/websiteManagement';
+const token = JSON.parse(localStorage.getItem("loginToken"))
 
 
 
@@ -22,6 +23,12 @@ import WebsiteManagement from './components/home/backOfficePage/websiteManagemen
 
 function App() {
 
+//   useEffect(async()=>{
+//     await createNewToken()
+   
+//  },[])
+
+
   return (
     
     <div>
@@ -30,15 +37,15 @@ function App() {
       <Switch>
         <Route exact path="/home"><Homepage/></Route>
         <Route exact path="/"><Homepage/></Route>
-        <Route exact path="/mapsElection"><Maps/></Route>
-        <Route exact path="/editUser" ><EditUser/></Route>
+        <Route exact path="/mapsElection">{token ?<Maps/>:<Redirect to={'/login'}/>}</Route>
+        <Route exact path="/editUser" >{token ? <EditUser/>:<Redirect to={'/login'}/>}</Route>
         <Route exact path="/register" ><Registration/></Route>
         <Route exact path="/login"><Login/></Route>  
         <Route exact path="/reset" ><ResetPass/></Route> 
         <Route exact path="/reset-confirm/:token"><NewPass/></Route>  
         <Route exact path="/activate-newUser/:token"><ActivateNewUser/></Route> 
-        <Route exact path="/payment" ><ReactPayPal/></Route> 
-        <Route exact path="/backOffice" ><WebsiteManagement/></Route> 
+        <Route exact path="/payment" >{token ? <ReactPayPal/>:<Redirect to={'/login'}/>}</Route> 
+        <Route exact path="/backOffice">{token ? <WebsiteManagement/>:<Redirect to={'/login'}/>}</Route> 
       </Switch>
 
 

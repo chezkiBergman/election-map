@@ -83,8 +83,8 @@ export default function EditUser() {
            
             return
         }
-        axios.put(`http://localhost:3003/users/editUser`, formData,
-            { headers: { "Authorization": `Bearer ${token['token']}` } })
+        axios.put(`users/editUser`, formData,
+          )
             .then(res => {
                 console.log(res);
                 console.log(res.data);
@@ -122,7 +122,7 @@ export default function EditUser() {
                     <Container className='container'>
                          
                         <h1 className='h1' style={{ margin: '15px', position: "absolute", left: "42%", color: "wheat" }}>ערוך פרופיל</h1>
-                        <Form onSubmit={handleOnSubmit} enctype="multipart/form-data" style={{ top: '65%' }}  >
+                        <Form onSubmit={handleOnSubmit} encType="multipart/form-data" style={{ top: '65%' }}  >
                             {selectedImage ? (
                                 <div style={{ textAlign: 'center', display: "flex", justifyContent: "space-between" }}>
                                     <img
@@ -158,7 +158,7 @@ export default function EditUser() {
                             <Form.Group className="mb-3" controlId="formBasicPassword">
                                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>סיסמה</Form.Label>
                                 {passwordErr.password && <Alert  variant="filled" severity="warning">{passwordErr.password}</Alert>}
-                                <Form.Control required="true" type={showPassword ? "text" : "password"} placeholder="Password" onFocus={(e) => setError("")} value={password} onChange={e => onChangeAndValidPassword(e)}  />
+                                <Form.Control required={true} type={showPassword ? "text" : "password"} placeholder="Password" onFocus={(e) => setError("")} value={password} onChange={e => onChangeAndValidPassword(e)}  />
                                 {!showPassword ? 
                                      <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> :
                                      <AiFillEye style={{ position: "relative", color: "black", left: "300px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}

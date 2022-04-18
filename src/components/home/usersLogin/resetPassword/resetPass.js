@@ -14,7 +14,7 @@ function ResetPass() {
     const resetPassword = (e) => {
         e.preventDefault()
         
-        axios.post(`http://localhost:3003/users/reset-password `, { email },)
+        axios.post(`users/reset-password `, { email },)
 
             .then(res => {
                 console.log(res);
