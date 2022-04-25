@@ -14,12 +14,7 @@ import mongoose from 'mongoose'
       sumDonationHistory:{
        type:  Number
       },
-      date:{
-          type:  String,
-        //   default: new Date().toDateString(),
-          require:true
-          
-      },
+    
     },      {timestamps:true}
 
     )

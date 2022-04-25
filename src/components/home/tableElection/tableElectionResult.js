@@ -4,7 +4,7 @@ import  {AiFillCloseCircle} from "react-icons/ai"
 
 
 
-export default function TableElection({activeMarker,closeClick}){
+export default function TableElection({activeMarker,closeclick}){
 
    
 
@@ -13,7 +13,7 @@ return(
  <div style={{position:"absolute",display:"flex",left:"3%",top:"3%",}}
                     position={{ lat: activeMarker.geometry.coordinates[1], lng: activeMarker.geometry.coordinates[0] }} >
                     <div  style={{background: '#accae4'}}>
-                    <AiFillCloseCircle onClick={closeClick} style={{position:"absolute"}} />
+                    <AiFillCloseCircle onClick={closeclick} style={{position:"absolute"}} />
                     <Table   striped bordered hover size="sm" style={{ background: "hsl(31 57 97 / 25%)" }}>
                         <thead>
                             <tr style={{fontWeight:"bold", textAlign:"center"}}>

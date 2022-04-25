@@ -1,7 +1,6 @@
 import { Container, Form, Button, Alert } from "react-bootstrap";
 import { useState } from "react";
 import axios from "axios"
-// import ConfirmResetPass from '../confirmReasetPassword/confirmResetPass'
 import { useParams, useHistory } from "react-router-dom";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai"
 
@@ -34,12 +33,9 @@ function NewPass() {
             return
         }else{
             axios.post(`users/newPassword `, { password, token })
-
                 .then(res => {
                     console.log(res.data);
-
                     setIsMsg(true);
-
                 }).catch(function (error) {
                     console.log(error);
                     setError(error.response.data.msg)
@@ -78,7 +74,12 @@ function NewPass() {
 
             }
         }
-
+        const onFocus = () => {
+            setError("")
+            setPassNotEqual("")
+            setPasswordErr("")
+            
+          }
 
         return (
             <Container>
@@ -90,7 +91,7 @@ function NewPass() {
                             <Form.Group className="mb-3" controlId="formBasicPassword">
                                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>סיסמה</Form.Label>
                                 {passwordErr.password && <Alert variant="danger">{passwordErr.password}</Alert>}
-                                <Form.Control required={true} type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={e => { onChangeAndValidPassword(e) }} />
+                                <Form.Control required={true} type={showPassword ? "text" : "password"} placeholder="Password" value={password} onFocus={() => onFocus()} onChange={e => { onChangeAndValidPassword(e) }} />
                                 {!showPassword ? <AiFillEye style={{ position: "relative", color: "black", left: "185px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} /> : <AiFillEyeInvisible style={{ position: "relative", color: "black", left: "185px", top: "-33px" }} onClick={() => setShowPassword(!showPassword)} />}
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicConfirmPassword">

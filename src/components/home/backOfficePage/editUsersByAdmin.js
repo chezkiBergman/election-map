@@ -93,7 +93,6 @@ export default function EditUsersByAdmin() {
         )
             .then(res => {
                 console.log(res);
-                console.log(res.data);
                setEditUserComplete(true) 
                setMsg("חשבונו של המשתמש עודכן בהצלחה")
               setTimeout(() => {

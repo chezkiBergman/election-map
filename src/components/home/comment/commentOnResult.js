@@ -3,18 +3,19 @@ import { Form, Button, Container, Alert } from "react-bootstrap"
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AiFillCloseCircle } from "react-icons/ai"
+import { format, parseISO } from "date-fns"
 import "./commentOnResult.css"
 const token = JSON.parse(localStorage.getItem("loginToken"))
 
 
 
-export default function Comment({ city, lat, lng, closeClick }) {
+export default function Comment({ city, lat, lng, closeclick }) {
 
     const history = useHistory()
     const [comment, setComment] = useState("")
-    const [listCommentApi, setListCommentApi] = useState([])
-    // const [url, setUrl] = useState('')
+    const [listCommentApi, setListCommentApi] = useState("")
     const [edit, setEdit] = useState(null)
+    const [date, setDate] = useState('')
 
 
 
@@ -24,14 +25,25 @@ export default function Comment({ city, lat, lng, closeClick }) {
             try {
                 if (token) {
                     const results = await axios.get(`users/getPostComment/${city}`)
-                    console.log(results.data);
-                    setListCommentApi(results.data.comments)
-                    // setUrl(`http://localhost:3003/uploads/${token['token']}`
-                    // )
+
+
+                    //  parseISO(i.createdAt, "MMMM do, yyyy H:mma")
+
+
+                    const commentsOnCity = results.data
+                        && results.data.comments?.map(i => {
+                            return {
+                                name: i.name,
+                                image: i.image,
+                                comment: i.comment,
+                                date: i.createdAt
+                            }
+                        })
+
+                    setListCommentApi(commentsOnCity)
+                    console.log(commentsOnCity);
                 }
-
             } catch (error) {
-
                 console.log(error.response);
 
             }
@@ -40,7 +52,7 @@ export default function Comment({ city, lat, lng, closeClick }) {
         console.log(listCommentApi);
     }, [comment])
 
-  
+
 
 
     const handelOnSubmit = (e) => {
@@ -67,10 +79,10 @@ export default function Comment({ city, lat, lng, closeClick }) {
 
     return (
         <Container className='head'
-            position={{ lat: lat, lng: lng }} closeClick={closeClick} >
+            position={{ lat: lat, lng: lng }} closeclick={closeclick} >
 
             <div>
-                <AiFillCloseCircle onClick={closeClick} style={{ position: "absolute", left: "1px" }} />
+                <AiFillCloseCircle onClick={closeclick} style={{ position: "absolute", left: "1px" }} />
                 <h3 className="h3">תגובות</h3>
                 {listCommentApi ?
                     (listCommentApi.map((post, index) => {
@@ -80,7 +92,9 @@ export default function Comment({ city, lat, lng, closeClick }) {
 
                                     <img className="imgComment"
                                         src={`http://localhost:3003/uploads/${post.image}`} />{post.name + "..."}{edit === index &&
-                                            <p style={{ fontWeight: "bold" }}>{post.comment}</p>}</button>
+                                            <p><span style={{ fontWeight: "bold" }}>{post.comment}</span><br />
+                                                {new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' }
+                                                ).format(new Date(post.date))}</p>}</button>
                             </div>
 
                         )

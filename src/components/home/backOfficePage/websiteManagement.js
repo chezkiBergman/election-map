@@ -32,7 +32,7 @@ export default function WebsiteManagement() {
     const columns = [
         {
             name: 'מחובר',
-            selector: row => <OnlinePredictionIcon style={{ color: row.isUserOnline == true ? 'green' : 'red' }} />
+            selector: row => <OnlinePredictionIcon style={{ color: new Date().getTime() < row.isUserOnline  ? 'green' : 'red' }} />
 
 
         },
@@ -65,7 +65,7 @@ export default function WebsiteManagement() {
             selector: row => <Button size="sm" variant="secondary"
 
                 onClick={() => donationHistory(row.email, 'donations')}
-            >{row.sumDonationHistory}</Button>,
+            >{row.sumDonationHistory.toFixed(2)}</Button>,
 
         }
         , {
@@ -80,6 +80,7 @@ export default function WebsiteManagement() {
 
 
     const donationHistory = (userName, postOrDonate) => {
+
         setShowDonationHistory(!showDonationHistory)
         token &&
             axios.get(`admin/checkDonationAmount/${userName}/${postOrDonate}`,
@@ -95,7 +96,7 @@ export default function WebsiteManagement() {
                             && res.data.findUser?.map(i => {
                                 return {
                                     donationAmount: i.donationAmount,
-                                    donationDate: i.date,
+                                    donationDate: i.createdAt,
                                 }
                             })
                         setDonations({ dateDonations, sumDonationHistory: lastElement.sumDonationHistory.toFixed(2) })
@@ -103,12 +104,7 @@ export default function WebsiteManagement() {
 
                 }).catch(function (error) {
                     if (error.response) {
-
-                        console.log({
-                            data: error.response.data,
-                            status: error.response.status,
-                            headers: error.response.headers
-                        });
+                        console.log(error.response);
                     }
                 })
 
@@ -127,11 +123,12 @@ export default function WebsiteManagement() {
                         city: i.city,
                         comment: i.comment,
                         name: i.name,
-                        image: i.image
+                        image: i.image,
+                        date: i.createdAt
                     }
                 })
             setCommentByUser(posts)
-            // getUsers()
+           
         } catch (error) {
             if (error.response) {
                 console.log({
@@ -175,7 +172,7 @@ export default function WebsiteManagement() {
                             permissions: m.permissions,
                             image: m.image,
                             activateUserByMail: m.activateUserByMail,
-                            isUserOnline: m.isUserOnline,
+                            isUserOnline: new Date(m?.timeUserConnect).getTime() + 7193000,
                             email: m.email,
                             pass: m.pass,
                             sumDonationHistory: m.sumDonationHistory,
@@ -185,7 +182,7 @@ export default function WebsiteManagement() {
 
                 setData(users)
 
-                console.log(res.data);
+                console.log(users);
             }).catch(async function (error) {
                 if (error.response) {
 

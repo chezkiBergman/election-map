@@ -26,6 +26,7 @@
     "d3-array": "^3.1.1",
     "d3-scale": "^4.0.2",
     "data-fns": "^0.1.8",
+    "date-fns": "^2.28.0",
     "dotenv": "^10.0.0",
     "google-map-react": "^2.1.10",
     "mdbreact": "^5.1.0",

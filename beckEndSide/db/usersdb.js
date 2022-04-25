@@ -34,12 +34,16 @@ import mongoose from 'mongoose'
         option: ['Pending', 'Active'],
         default: 'Pending'
     },
+    timeUserConnect:{
+      type: Date,
+
+    },
     
-      isUserOnline:{
-         type: Boolean,
-        option:[true,false],
-        default:false
-      },
+      // isUserOnline:{
+      //    type: Boolean,
+      //   option:[true,false],
+      //   default:false
+      // },
     
   
     permissions:{
@@ -56,7 +60,7 @@ import mongoose from 'mongoose'
       type:Number,
       default: 0
     }
-  });
+  }, {timestamps:true});
 
  
 

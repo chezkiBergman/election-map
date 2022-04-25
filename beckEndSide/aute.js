@@ -91,7 +91,7 @@ export const verifyToken = (req, res, next) => {
 export const tokenId = (id) => {
    let tokens = {}
    const token = jwt.sign({id}, process.env.JWT_PASS, {expiresIn:"1m"});
-   const refreshToken = jwt.sign({id}, process.env.JWT_PASS, { expiresIn:"4h"})
+   const refreshToken = jwt.sign({id}, process.env.JWT_PASS, { expiresIn:"2h"})
    tokens.token = token
    tokens.refreshToken = refreshToken
    return tokens

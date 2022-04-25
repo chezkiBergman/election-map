@@ -95,17 +95,10 @@ export default function Header() {
     }, [tokenValid, state, image])
 
 
-    useEffect(() => {
-        const now = new Date()
-        if (now.getTime() > token?.expiry ) {
-            console.log(now.getTime(),token?.expiry);
-            logOutFunc()
-
-        //    history.push('/login')
-         
-        }
+    // useEffect(() => {
+    //         logOutFunc()
         
-    }, [token])
+    // }, [token])
 
 
 

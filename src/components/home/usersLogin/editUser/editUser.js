@@ -95,11 +95,8 @@ export default function EditUser() {
                 }, 3000);
 
             }).catch(function (error) {
-                if ( error.response.data === 'jwt expired') {
-                    localStorage.removeItem("loginToken")      
-                }
                 console.log(error);
-                setError(error.response.data)  
+                setError(error.response?.data)  
             })
         e.preventDefault()
         setEmail('')

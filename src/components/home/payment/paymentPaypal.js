@@ -31,13 +31,13 @@ export default function ReactPayPal() {
       )
       .then(res => {
        
-        let lastElement = res.data.findUser[res.data.findUser.length - 1];
+        let lastElement = res.data?.findUser[res.data.findUser.length - 1];
         console.log(lastElement);
           const dateDonations = res.data 
           && res.data.findUser?.map(i=>{
             return{
               donationAmount: i.donationAmount,
-              donationDate: i.date,
+              donationDate: i.createdAt,
             }
              })
          setDonations({dateDonations, sumDonationHistory: lastElement.sumDonationHistory.toFixed(2)})

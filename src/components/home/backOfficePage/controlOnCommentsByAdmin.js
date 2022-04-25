@@ -32,11 +32,7 @@ console.log(e);
           changeComment(newData)
         }).catch(function (error) {
           if (error.response) {
-            console.log({
-              data: error.response.data,
-              status: error.response.status,
-              headers: error.response.headers
-            });
+            console.log(error.response);
           }
         })
         
@@ -47,7 +43,7 @@ console.log(e);
   return (
     <>
       {show &&
-        <div style={{ position: 'absolute', right: '0', width: "300px", backgroundColor: "white", 
+        <div style={{ position: 'absolute', right: '0', backgroundColor: "#c7d4e8", 
         textAlign: "center", color: 'cadetblue', fontSize: '18px', fontWeight: 'bold', margin: "5px" }}>
           היסטוריית תגובות
           <Table striped bordered hover size="sm">
@@ -55,10 +51,11 @@ console.log(e);
               return (
                 <tbody key={i}>
                   <tr>
-                    <td className='btn btn-outline-primary' >
-                      <DeleteIcon  onClick={(e) => postDelete(e)} /></td>
+                    <td className='btn btn-outline-primary'><DeleteIcon onClick={(e) => postDelete(e)}/></td>
                     <td style={{fontSize:"small"}} ref={commentRef}>{item.comment}</td>
                     <td>{item.city}</td>
+                    <td>{new Intl.DateTimeFormat('en-GB',{ dateStyle:'medium', timeStyle: 'short' }
+                    ).format(new Date(item.date))}</td>
                   </tr>
                 </tbody>
 

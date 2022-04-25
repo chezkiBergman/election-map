@@ -24,7 +24,7 @@ export default function Search({ onSearch }) {
     const token = JSON.parse(localStorage.getItem("loginToken"))
     if (token) {
       const results = await axios.get(`users/getMapElectionGeoJson`)
-      const citys = results.data.features
+      const citys = results.data?.features
       const obj = citys.filter(c => c.properties.City.includes(city))
       setResultSearch(obj)
     }

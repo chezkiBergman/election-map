@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     },
     comment: {
         type: String,
-        require: true
+        require: true,
     },
     user: {
         type: mongoose.Types.ObjectId,
@@ -25,7 +25,9 @@ const userSchema = new mongoose.Schema({
         require:true
        
         }
-});
+      
+},  {timestamps:true}
+);
 
 
 export const Comment = mongoose.model("Comment", userSchema)

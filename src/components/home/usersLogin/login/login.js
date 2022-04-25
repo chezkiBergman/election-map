@@ -25,25 +25,23 @@ function Login() {
             (setAlreadyLogin(true)) :
             axios.post(`users/singIn`, { email, password })
                 .then(res => {
+                    res.data &&
+                    console.log(res.data);
                     console.log(res.data.findUser['permissions']);
-                    const now = new Date()
                     const tokenExp = {}
-                    tokenExp.expiry = now.getTime()+ 1000000
                     tokenExp.token = res.data.token
                     tokenExp.img =  `http://localhost:3003/uploads/${res.data.findUser.image}`
-                    tokenExp.permissions =res.data.findUser.permissions
+                    tokenExp.permissions =res?.data?.findUser.permissions
                     tokenExp.email =res.data.findUser.email
                     localStorage.setItem('loginToken', JSON.stringify(tokenExp))
                     res.data.findUser['permissions'] === "admin" ? ( window.location.replace("/backOffice")):
                    window.location.replace('/mapsElection')
                 }).catch(function (error) {
-                    if (error.response) {
+                    console.log(error);
                         setError(error.response.data.msg)
                         console.log(error.response.data);
                         console.log(error.response.status);
                         console.log(error.response.headers);
-
-                    }
 
                 });
 
@@ -82,12 +80,7 @@ function Login() {
                     שכחת את הסיסמה?
                 </Link>
             </Form>
-            {/* {
-                moveToMapElectin ? (<Redirect to={"/mapsElection"} />
-
-                ) : null
-            } */}
-
+           
             {
                 error ? (<Alert variant="filled" severity="error"style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "42.1%", top: "25%" }}>{error}</Alert>) : null
             }

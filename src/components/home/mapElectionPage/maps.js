@@ -61,10 +61,10 @@ function Maps() {
         token &&
             axios.get(`users/getMapElectionGeoJson`,
                 ).then(res => {
-                    setPosts(res.data.features)
+                    setPosts(res.data?.features)
                     console.log(res);
 
-                }).catch(  function (error) {
+                }).catch( function (error) {
                 
                     console.log(error.response);
 
@@ -110,6 +110,7 @@ function Maps() {
     const handleOnLoad = (map) => {
 
         mapRef.current = map;
+        console.log(mapRef.current.zoom);
         console.log(mapRef.current.center);
         const newPos = mapRef.current.getCenter().toJSON();
         setCenter(newPos)
@@ -179,13 +180,15 @@ function Maps() {
                     {activeMarker ? !clickedMap && !clickedComment && (
 
                         <div style={{ width: "400px", margin: "auto", marginTop: '20px' }}   >
-                            {showDiv ? (<CommentOrMap activeMarker={activeMarker} setShowDiv={() => setShowDiv(false)} setClickedMap={() => setClickedMap(true)} setClickedComment={() => setClickedComment(true)} />) : null}
+                            {showDiv ? (<CommentOrMap activeMarker={activeMarker} setShowDiv={() => setShowDiv(false)} 
+                            setClickedMap={() => setClickedMap(true)} setClickedComment={() => setClickedComment(true)} />) : null}
                         </div>
                     ) : null}
-                    {clickedMap ? (<TableElection activeMarker={activeMarker} closeClick={clickedMaping} />) : null}
+                    {clickedMap ? (<TableElection activeMarker={activeMarker} closeclick={clickedMaping} />) : null}
 
                     {
-                        clickedComment ? !clickedMap && (<Comment city={activeMarker.properties.City} lat={activeMarker.geometry.coordinates[1]} lng={activeMarker.geometry.coordinates[0]} closeClick={clickedOnComment} />) : null
+                        clickedComment ? !clickedMap && (<Comment city={activeMarker.properties.City} lat={activeMarker.geometry.coordinates[1]} lng={activeMarker.geometry.coordinates[0]} 
+                            closeclick={clickedOnComment} />) : null
                     }
 
 

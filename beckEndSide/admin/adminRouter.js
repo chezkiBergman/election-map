@@ -100,6 +100,9 @@ adminRouter.get("/checkDonationAmount/:userName/:postOrDonate", async (req, res)
         if (!postByUser.length) {
           return res.status(200).send({ msg: "משתמש זה עדיין לא הגיב" })
         }
+        let sum = postByUser.length
+        userName.sumOfComments = sum
+        await userName.save()
         return res.status(200).json({ postByUser: postByUser })
 
       } if (req.params.postOrDonate === 'donations') {
@@ -123,6 +126,7 @@ adminRouter.delete("/postDelete/:comment", async (req, res) => {
   try {
     if (!req.params.comment) { return res.send("you must set comment as parameter") }
     const postByUser = await Comment.findOne({ comment: req.params.comment })
+    if (!postByUser) { return res.status(403).send("comment not found") }
     const sumCommentsByUser = await Comment.find({ user: postByUser.user })
     console.log(sumCommentsByUser.length)
       const findUser = await User.findOne({ _id: postByUser.user })

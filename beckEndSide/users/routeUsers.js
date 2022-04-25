@@ -89,7 +89,7 @@ userRouter.get('/getMapElectionGeoJson', verifyToken, (req, res) => {
 userRouter.post("/singUp", upload.single('avatar'), async (req, res) => {
   try {
     const emailExists = await User.findOne({ email: req.body.email })
-    if (emailExists) return res.status(400).send({msg:"Email already exists"})
+    if (emailExists) return res.status(400).send({msg:"אימייל זה כבר נמצא בשימוש"})
     const { name, email, password } = req.body
     if (name && email && password) {
       const payload = {
@@ -193,11 +193,11 @@ userRouter.post("/singIn", async (req, res) => {
     if (findUser.activateUserByMail != 'Active') {
       return res.status(401).json({ msg: "אתה נדרש להיכנס אל תיבת האימייל שלך ולהפעיל את החשבון" })
     }
-    findUser.isUserOnline = true;
+    findUser.timeUserConnect = new Date;
     await findUser.save()
     res.status(200).cookie('refreshToken', newToken.refreshToken, {
       httpOnly: true,
-     maxAge:  4 * 60 * 60 * 1000
+      maxAge:  2 * 60 * 60 * 1000
 
     }).json({ token: newToken.token, findUser: findUser })
 
@@ -237,7 +237,7 @@ userRouter.get("/logout", verifyToken, async (req, res) => {
   try {
     const findUser = await User.findOne({ _id: req.user.id })
     !findUser && res.status(404).send({ msg: "משתמש לא נמצא במערכת" })
-    findUser.isUserOnline = false;
+    findUser.timeUserConnect = undefined;
     await findUser.save()
     res.clearCookie('refreshToken').status(200).send({ msg: "להתראות בפעם הבאה" })
   } catch (err) {
@@ -373,10 +373,6 @@ userRouter.post('/newPassword', async (req, res) => {
 userRouter.post("/donationAmount", verifyToken, async (req, res) => {
   try {
 
-    var today = new Date()
-
-    today.toDateString();
-    // let formatDate = "יום: " + parseInt(today.getDay() + 1) + "-" + today.getDate() + '-' + parseInt(today.getMonth() + 1) + '-' + today.getFullYear()
     const findUser = await Donation.find({ user: req.user.id })
     let sum = 0;
     for (let i = 0; i < findUser.length; i++) {
@@ -394,7 +390,6 @@ userRouter.post("/donationAmount", verifyToken, async (req, res) => {
       const newdDnation = new Donation({
         user: req.user.id,
         donationAmount: pay,
-        date: today.toDateString(),
         sumDonationHistory: donationHistory
 
       })

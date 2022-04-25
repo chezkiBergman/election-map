@@ -12,33 +12,38 @@ axios.interceptors.request.use(config => {
     console.log(config);
         return config;
     },
-    error => {
-        return Promise.reject(error);
-    }
+    // error => {
+    //     return Promise.reject(error);
+    // }
 )
 
-axios.interceptors.response.use(resp => resp, async error => {
+axios.interceptors.response.use(resp =>  resp , async error => {
+    
     if (error.response.data === "jwt expired" && refresh < 2) {
-        refresh = true;
+        try{
             const response = await axios.get(`users/createNewToken`,)
-            if (response.data.accessToken) {
+            if (response?.data.accessToken) {
+                error.config.headers['Authorization'] = `Bearer ${response.data['accessToken']}`;
                 const accessToken = response.data.accessToken
                 newToken['token'] = accessToken
                 localStorage.setItem('loginToken', JSON.stringify(newToken))
                 JSON.parse(localStorage.getItem('loginToken'))
-                error.config.headers['Authorization'] = `Bearer ${response.data['accessToken']}`;
+               
                 console.log(error.config);
                 return axios(error.config);
-            } if (response?.data === 'refreshToken not valid' ||error.response?.data === 'refreshToken expire') {
+            } 
+        }catch(error){
+            console.log(error);
+            if (error.response.status === 401|| error.response.status === 403) {
                 localStorage.removeItem('loginToken')
                 window.location.href = '/login'
             } 
+        }
+            
 
 
-        }else{
-        refresh++;
-        return error.response;
-    }
+        }
+       
     refresh++;
-    return error;
+  return Promise.reject(error);
 });

@@ -14,11 +14,10 @@ export default function DeleteAccount() {
     const token = JSON.parse(localStorage.getItem("loginToken"))
     const history =useHistory()
         token &&
-        axios.delete(`http://localhost:3003/users/deleteAccount`,
-        { headers: { "Authorization": `Bearer ${token['token']}` } })
+        axios.delete(`users/deleteAccount`)
         .then(res => {
+            setDeleted(res.data?.msg)
             console.log(res.data);
-            setDeleted(res.data.msg)
            if (token['permissions'] === 'admin') return
             setTimeout(() => {
             localStorage.removeItem("loginToken")

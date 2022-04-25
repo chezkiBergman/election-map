@@ -15,20 +15,15 @@ export default function DeleteAccountByAdmin({userName}) {
   console.log(user);
     const [deleted, setDeleted] = useState(false)
        token &&
-        axios.delete(`admin/deleteAccountByAdmin/${user}`,
-      )
+        axios.delete(`admin/deleteAccountByAdmin/${user}` )
         .then(res => {
             console.log(res.data);
-            setDeleted(res.data.msg)
+            setDeleted(res.data?.msg)
          return
            
         }).catch(function (error) {
             if (error.response) {
-                console.log({
-                    data: error.response.data,
-                    status: error.response.status,
-                    headers: error.response.headers
-                });
+                console.log(error.response);
             }
          
         })
