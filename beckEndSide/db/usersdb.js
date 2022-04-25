@@ -7,6 +7,7 @@ import mongoose from 'mongoose'
      require:true
     
      },
+     
     name: {
         type: String,
         require: true,

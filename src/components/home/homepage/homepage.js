@@ -5,20 +5,9 @@ import { useHistory } from "react-router-dom";
 
 
 function Homepage() {
-// const history = useHistory()
-//   useEffect(() => {
-//     const token = () => {
-//         const token = JSON.parse(localStorage.getItem("loginToken"))
-//         if (token ) {
-//           history.push("/mapsElection")
-//         }
-//     }
-//     token()
 
-
-// }, [])
   return(
-  
+   
 
     <div style={{position: 'absolute', textAlign: 'center', width: '1280px',top: '80px'}}>
      

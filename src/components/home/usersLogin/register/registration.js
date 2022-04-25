@@ -118,7 +118,7 @@ function Registration() {
               return
             }
 
-           
+            
             console.log(error);
           })
 

@@ -302,7 +302,7 @@ userRouter.post("/postComment", verifyToken, async (req, res) => {
       const user = await User.findOne({ _id: req.user.id })
       user.sumOfComments = sum;
       await user.save()
-
+ 
       return res.json({ post: commentOnResult, msg: "saved" });
     }
     return res.send("you must post a comment and city")

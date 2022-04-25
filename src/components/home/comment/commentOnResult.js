@@ -52,7 +52,7 @@ export default function Comment({ city, lat, lng, closeclick }) {
         console.log(listCommentApi);
     }, [comment])
 
-
+ 
 
 
     const handelOnSubmit = (e) => {

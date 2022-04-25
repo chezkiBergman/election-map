@@ -60,7 +60,7 @@ function NewPass() {
             setPasswordErr(errors)
             setPassword(e.target.value)
         }
-
+ 
         function passComparison(e) {
             console.log(e.target.value);
             setPass(e.target.value)

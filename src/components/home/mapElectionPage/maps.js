@@ -190,7 +190,7 @@ function Maps() {
                         clickedComment ? !clickedMap && (<Comment city={activeMarker.properties.City} lat={activeMarker.geometry.coordinates[1]} lng={activeMarker.geometry.coordinates[0]} 
                             closeclick={clickedOnComment} />) : null
                     }
-
+ 
 
                 </GoogleMap>
 

@@ -57,6 +57,7 @@ adminRouter.put('/editUserByAdmin',  upload.single('avatar'), async (req, res) =
 });
 
 
+
 adminRouter.get("/getAllUsers", async (req, res) => {
   try {
     const allUsers = await User.find({})

@@ -41,7 +41,7 @@ export default function ReactPayPal() {
             }
              })
          setDonations({dateDonations, sumDonationHistory: lastElement.sumDonationHistory.toFixed(2)})
-        
+         
       }).catch(function (error) {
           if (error.response) {
               console.log({ data: error.response.data,

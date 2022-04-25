@@ -17,7 +17,7 @@ function Login() {
     const [alreadyLogin, setAlreadyLogin] = useState(false)
     const [error, setError] = useState("")
     const [showPassword, setShowPassword] = useState(false)
-    // 
+    
     const handleOnSubmit = (e) => {
         const token = JSON.parse(localStorage.getItem("loginToken"))
         console.log(token);

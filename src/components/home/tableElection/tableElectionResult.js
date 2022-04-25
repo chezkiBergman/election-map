@@ -7,7 +7,7 @@ import  {AiFillCloseCircle} from "react-icons/ai"
 export default function TableElection({activeMarker,closeclick}){
 
    
-
+ 
 
 return(
  <div style={{position:"absolute",display:"flex",left:"3%",top:"3%",}}

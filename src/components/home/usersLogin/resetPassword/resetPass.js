@@ -7,7 +7,7 @@ import ConfirmResetPass from "./confirmResetPass"
 
 
 function ResetPass() {
-                                                                                      
+                                                                                       
     const [email, setEmail] = useState('')
     const [isMsg, setIsMsg] = useState('')
    

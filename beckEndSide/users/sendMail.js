@@ -7,7 +7,7 @@ console.log(process.env.EMAIL_ADDRESS);
 
 const oAuth2client = new google.auth.OAuth2(process.env.CLIENT_ID,process.env.CLIENT_SECRET,process.env.REDIRECT_URI)
 
-
+ 
 oAuth2client.setCredentials({refresh_token: process.env.REFRESH_TOKEN})
 
 export async function sendEmail({to,subject,text}) {

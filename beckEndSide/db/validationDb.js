@@ -8,6 +8,6 @@ export const validation = joi.object({
      activateUserByMail: joi.string().default('Pending'),
      isUserOnline: joi.boolean().default(false),
 });
-
+ 
 
 

@@ -16,7 +16,7 @@ export default function CommentOrMap({ activeMarker, setShowDiv, setClickedMap, 
             {activeMarker.color === 'red' ? (<p style={{ color: "white", textAlign: 'center' }}>בעיר זו זכתה הקואליציה במירב הקולות</p>)
                 : <p style={{ color: "white", textAlign: 'center' }}>בעיר זו זכתה האופוזיציה במירב הקולות</p>}
             < div style={{ display: 'flex', justifyContent: 'space-around' }}>
-
+ 
                 <Button variant="outline-info" style={{ fontWeight: 'bolder', color: 'white' }} onClick={setClickedMap}>
                     מפת הבחירות
                 </Button>

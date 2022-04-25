@@ -20,7 +20,7 @@ export default function DeleteAccountByAdmin({userName}) {
             console.log(res.data);
             setDeleted(res.data?.msg)
          return
-           
+            
         }).catch(function (error) {
             if (error.response) {
                 console.log(error.response);

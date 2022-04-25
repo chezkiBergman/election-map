@@ -12,8 +12,7 @@ export default function HistoryOfDonations({donations}){
            <td>*</td>
            <td>{item.donationAmount}$</td>
            <td>{new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' }
-                                                
-                                                ).format(new Date(item.donationDate))}</td>
+                                     ).format(new Date(item.donationDate))}</td>
            </tr>
          )})}<tr><th>סה"כ</th><td rowSpan={3}colSpan={3}>{donations.sumDonationHistory}$</td></tr> </tbody></Table></div>
 

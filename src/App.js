@@ -39,7 +39,7 @@ function App() {
         <Header/>
       <Switch>
      
-      
+       
         <Route exact path="/home"><Homepage/></Route>
         <Route exact path="/"><Homepage/></Route>
         <Route exact path="/mapsElection">{token ?<Maps/>:<Redirect to={'/login'}/>}</Route>

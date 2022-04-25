@@ -151,7 +151,7 @@ export default function EditUser() {
                                 {emailErr.email && <Alert variant="filled" severity="warning">{emailErr.email}</Alert>}
                                 <Form.Control type="email" placeholder="Enter email" value={email} onFocus={(e) => setError("")} onChange={e => onChangeAndValidMail(e)} />
                             </Form.Group>
-
+ 
                             <Form.Group className="mb-3" controlId="formBasicPassword">
                                 <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>סיסמה</Form.Label>
                                 {passwordErr.password && <Alert  variant="filled" severity="warning">{passwordErr.password}</Alert>}

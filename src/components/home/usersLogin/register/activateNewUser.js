@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from 'axios'
 import { useParams } from "react-router-dom";
 
-
+ 
 function ActivateNewUser() {
   const { token } = useParams()
   const[isTokenActivateExpired,setIsTokenActivateExpired]=useState(false)
