@@ -9,15 +9,13 @@ The website includes admin-interface. Indicator in the admin interface if the us
 ![‏‏צילום מסך (60)](https://user-images.githubusercontent.com/80212235/162967226-ec280610-64fd-4bcc-ad2b-8dc93d982e3f.png)
 
 ![‏‏צילום מסך (57)](https://user-images.githubusercontent.com/80212235/162967145-cc068104-707e-48c4-9950-5f6b7957a92a.png)
-![‏‏צילום מסך (58)](https://user-images.githubusercontent.com/80212235/162967174-2cb2d02b-bec1-4e90-a264-0a876c30b9f6.png)
+![‏‏צילום מסך (2)](https://user-images.githubusercontent.com/80212235/165086162-e7672f2d-4f7e-4f46-93d3-5878973708c1.png)
 
 ![‏‏צילום מסך (59)](https://user-images.githubusercontent.com/80212235/162967010-7520f253-082b-4d2e-92dd-069876543fdd.png)
 
 ![‏‏צילום מסך (55)](https://user-images.githubusercontent.com/80212235/162966134-eafc51e2-070a-4507-ba04-d3daadf64959.png)
 
-
-
-
+![‏‏צילום מסך (1)](https://user-images.githubusercontent.com/80212235/165085687-68906bc3-834b-462e-82a7-9b135e29390d.png)
 
 
 # Getting Started with Create React App
