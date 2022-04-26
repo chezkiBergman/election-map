@@ -54,7 +54,7 @@ function Login() {
     return (
         <Container className='container'>
 
-            <h1 className='h1' style={{ color: "wheat", margin: '15px', position: "absolute", left: "42%" }}>התחברות</h1>
+            <h1 className='h1' style={{ color: "wheat", marginTop: '4%', position: "absolute", left: "40.5%",backgroundColor:"#0d6efd",borderRadius:"5px",width:"220px" }}>התחברות</h1>
             <Form onSubmit={handleOnSubmit} className={styles.form}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label style={{ color: "wheat", fontWeight: "bold" }}>אימייל</Form.Label>
@@ -82,11 +82,11 @@ function Login() {
             </Form>
            
             {
-                error ? (<Alert variant="filled" severity="error"style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "42.1%", top: "25%" }}>{error}</Alert>) : null
+                error ? (<Alert variant="filled" severity="error"style={{ marginTop: "1%", textDecoration: "none", position: "absolute", left: "36.7%" }}>{error}</Alert>) : null
             }
             {
                 alreadyLogin && <Alert variant="filled" severity="error"
-                style={{ margin: "2px", textDecoration: "none", position: "absolute", left: "35.1%", top: "10%" }}
+                style={{ marginTop: "1%", textDecoration: "none", position: "absolute", left: "36.7%" }}
                 >הינך מחובר לאתר, נא התנתק בטרם התחבר שוב</Alert>
 
             }

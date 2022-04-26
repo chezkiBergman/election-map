@@ -159,8 +159,7 @@ function Registration() {
 
           <Container className='container'>
           
-            <h1 className='h1'
-              style={{ margin: '15px', position: "absolute", left: "42%", color: "wheat" }}>הרשמה</h1>
+          <h1 className='h1' style={{ color: "wheat", marginTop: '4%', position: "absolute", left: "40.5%",backgroundColor:"#0d6efd",borderRadius:"5px",width:"220px" }}>הרשמה</h1>
 
             <Form onSubmit={handleOnSubmit} encType="multipart/form-data"
               style={{ top: '65%' }} className={styles.form}>

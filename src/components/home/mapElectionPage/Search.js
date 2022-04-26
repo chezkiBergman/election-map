@@ -38,11 +38,12 @@ export default function Search({ onSearch }) {
 
   return (
     <div style={{
-      position: "relative", top: '150px',
+      position: "relative", top: '50px',
       right: '500px'
     }}>
-      <Form onSubmit={onFormSumbit}>
-        <Form.Group style={{ position: "absolute", top: "-45px", right: "-135px" }}
+    
+      <Form style={{position:"absolute",right:"500px"}} onSubmit={onFormSumbit}>
+        <Form.Group
          className="mb-3" controlId="formBasicCity">
           <Form.Label style={{ fontWeight: "600" }}>חפש עיר</Form.Label>
           <input className="form-control" style={{ width: "200px" }} type="city" placeholder="כתוב שם עיר"

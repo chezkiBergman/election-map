@@ -34,7 +34,7 @@ function App() {
 
   return (
     
-    <div>
+    <div style={{position:"absolute",width:"100%"}}>
         <Router>
         <Header/>
       <Switch>

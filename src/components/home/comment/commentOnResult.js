@@ -52,7 +52,7 @@ export default function Comment({ city, lat, lng, closeclick }) {
         console.log(listCommentApi);
     }, [comment])
 
- 
+
 
 
     const handelOnSubmit = (e) => {
@@ -104,7 +104,7 @@ export default function Comment({ city, lat, lng, closeclick }) {
                     !listCommentApi.length && <Alert className="noYetComment">על עיר זו לא נכתבו תגובות</Alert>
                 }
 
-                <div style={{ display: "flex", }} >
+                <div style={{ display: "flex",position:"absolute",top:"60%",left:"550px" }} >
                     <Form onSubmit={handelOnSubmit}>
                         <Form.Group >
                             <img className="imgOfUser"

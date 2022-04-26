@@ -142,9 +142,9 @@ export default function ReactPayPal() {
                 <HistoryOfDonations donations={donations}/>
              }
         
-            <div style={{position:"absolute",left:"42.2%",top:"20%"}}>
+            <div  style={{position:"absolute",left:"42.2%",top:"130px"}}>
                <Form.Group className="mb-3" style={{textAlign:"center"}} controlId="formNumber">
-              <Form.Label style={{ color: "wheat", fontWeight: "bold" ,fontSize:"35px" }}>סכום התרומה</Form.Label>
+              <Form.Label className='formLabel'>סכום התרומה</Form.Label>
            <Form.Control required={true} type="number" placeholder="בחר סכום" value={pay}  onChange={e  => changeMount(e)} />
           </Form.Group>
              

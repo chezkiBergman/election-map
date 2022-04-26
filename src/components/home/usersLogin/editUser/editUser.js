@@ -111,14 +111,14 @@ export default function EditUser() {
     return (
 
         <Container >
-            {msg &&  <Alert variant="filled" severity="success" style={{position:"absolute",textAlign:"center",left:'42.2%',top:"10%"}}>{msg}</Alert>}
-            {error  &&<Alert variant="filled" severity="error" style={{position:"absolute",textAlign:"center",left:'42.2%',top:"20%"}}>{error}</Alert>}
+            {msg &&  <Alert variant="filled" severity="success" style={{position:"absolute",textAlign:"center",left:'41.1%',marginTop:"1%"}}>{msg}</Alert>}
+            {error  &&<Alert variant="filled" severity="error" style={{position:"absolute",textAlign:"center",left:'41.1%',margiinTop:"1%"}}>{error}</Alert>}
           
             {
                 !editUserComplete &&
                     <Container className='container'>
                          
-                        <h1 className='h1' style={{ margin: '15px', position: "absolute", left: "42%", color: "wheat" }}>ערוך פרופיל</h1>
+                         <h1 className='h1' style={{ color: "wheat", marginTop: '4%', position: "absolute", left: "507px",backgroundColor:"#0d6efd",borderRadius:"5px",width:"230px" }}>ערוך פרופיל</h1>
                         <Form onSubmit={handleOnSubmit} encType="multipart/form-data" style={{ top: '65%' }}  >
                             {selectedImage ? (
                                 <div style={{ textAlign: 'center', display: "flex", justifyContent: "space-between" }}>
