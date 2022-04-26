@@ -5,8 +5,7 @@ client side made by React and server side by Nodejs and the database in MongoDB.
 The website includes admin-interface. Indicator in the admin interface if the user is logged in and a massege to all users of the site about a guest on the website
 
 
-
-![‏‏צילום מסך (60)](https://user-images.githubusercontent.com/80212235/162967226-ec280610-64fd-4bcc-ad2b-8dc93d982e3f.png)
+![‏‏צילום מסך (3)](https://user-images.githubusercontent.com/80212235/165283735-89fa137d-b34f-4a8b-8890-e1d7b0ae1fd8.png)
 
 ![‏‏צילום מסך (57)](https://user-images.githubusercontent.com/80212235/162967145-cc068104-707e-48c4-9950-5f6b7957a92a.png)
 ![‏‏צילום מסך (2)](https://user-images.githubusercontent.com/80212235/165086162-e7672f2d-4f7e-4f46-93d3-5878973708c1.png)
